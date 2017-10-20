@@ -1,0 +1,157 @@
+[
+	{
+		"fuceid": "1",
+		"fucecode": "SERVER",
+		"fucename": "服务端管理",
+		"fucelevel": "1",
+		"fucedesc": "服务端管理",
+		"fuceresource": "#",
+		"fuceindex": "1",
+		"fuceparentcode": "0",
+		"fuceismenu": "1",
+		"isdel": 0,
+		"ownerType": 0,
+		"isChecked": false,
+		"childrenList": []
+	}, {
+		"fuceid": "2",
+		"fucecode": "USER",
+		"fucename": "用户管理",
+		"fucelevel": "1",
+		"fucedesc": "用户管理",
+		"fuceresource": "#",
+		"fuceindex": "2",
+		"fuceparentcode": "0",
+		"fuceismenu": "1",
+		"isdel": 0,
+		"ownerType": 0,
+		"isChecked": false,
+		"childrenList": [
+			{
+				"fuceid": "5",
+				"fucecode": "USER-LIST",
+				"fucename": "用户总览",
+				"fucelevel": "2",
+				"fucedesc": "用户总览",
+				"fuceresource": "/models/system/code_create.html",
+				"fuceindex": "1",
+				"fuceparentcode": "USER",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
+			}, {
+				"fuceid": "6",
+				"fucecode": "USER-TYPE",
+				"fucename": "用户组总览",
+				"fucelevel": "2",
+				"fucedesc": "dfdf",
+				"fuceresource": "/log/goToPage?goToPage\u003dlogList",
+				"fuceindex": "2",
+				"fuceparentcode": "USER",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
+			}
+		]
+	}, {
+		"fuceid": "3",
+		"fucecode": "TERMINAL",
+		"fucename": "终端管理",
+		"fucelevel": "1",
+		"fucedesc": "终端管理",
+		"fuceresource": "#",
+		"fuceindex": "2",
+		"fuceparentcode": "0",
+		"fuceismenu": "1",
+		"isdel": 0,
+		"ownerType": 0,
+		"isChecked": false,
+		"childrenList": [
+			{
+				"fuceid": "7",
+				"fucecode": "TERMINAL-LIST",
+				"fucename": "终端总览",
+				"fucelevel": "2",
+				"fucedesc": "终端总览",
+				"fuceresource": "/models/system/code_create.html",
+				"fuceindex": "1",
+				"fuceparentcode": "TERMINAL",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
+			}, {
+				"fuceid": "8",
+				"fucecode": "TERMINAL-TYPE",
+				"fucename": "终端组总览",
+				"fucelevel": "2",
+				"fucedesc": "dfdf",
+				"fuceresource": "/log/goToPage?goToPage\u003dlogList",
+				"fuceindex": "2",
+				"fuceparentcode": "TERMINAL",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
+			}
+		]
+	}, {
+		"fuceid": "4",
+		"fucecode": "MIRROR",
+		"fucename": "镜像管理",
+		"fucelevel": "1",
+		"fucedesc": "镜像管理",
+		"fuceresource": "#",
+		"fuceindex": "2",
+		"fuceparentcode": "0",
+		"fuceismenu": "1",
+		"isdel": 0,
+		"ownerType": 0,
+		"isChecked": false,
+		"childrenList": [
+			{
+				"fuceid": "9",
+				"fucecode": "MIRROR-TEMPLATE",
+				"fucename": "镜像模板管理",
+				"fucelevel": "2",
+				"fucedesc": "镜像模板管理",
+				"fuceresource": "/models/system/code_create.html",
+				"fuceindex": "1",
+				"fuceparentcode": "MIRROR",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
+			}, {
+				"fuceid": "10",
+				"fucecode": "MIRROR-LIST",
+				"fucename": "镜像总览",
+				"fucelevel": "2",
+				"fucedesc": "镜像总览",
+				"fuceresource": "/log/goToPage?goToPage\u003dlogList",
+				"fuceindex": "2",
+				"fuceparentcode": "MIRROR",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
+			}, {
+				"fuceid": "11",
+				"fucecode": "MIRROR-DEPLOY",
+				"fucename": "部署镜像",
+				"fucelevel": "2",
+				"fucedesc": "部署镜像",
+				"fuceresource": "/log/goToPage?goToPage\u003dlogList",
+				"fuceindex": "2",
+				"fuceparentcode": "MIRROR",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
+			}
+		]
+	}
+	
+]

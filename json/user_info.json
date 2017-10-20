@@ -1,0 +1,19 @@
+{
+	"userid": 1,
+	"useraccount": "admin",
+	"userpasswd": "81dc9bdb52d04dc20036dbd8313ed055",
+	"userrealname": "开发管理员",
+	"useraccounttype": 0,
+	"useremail": "csmycw@qq.com",
+	"qq": "223333344444",
+	"userphone": "13422221166",
+	"usermobile": "13422225555",
+	"userfax": "13422221155",
+	"companyId": 0,
+	"deptId": 2,
+	"status": 1,
+	"isDefault": 0,
+	"isdel": 0,
+	"isCookie": 0,
+	"isChecked": false
+}

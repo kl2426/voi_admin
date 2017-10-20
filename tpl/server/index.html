@@ -1,0 +1,278 @@
+<div class="g-content m-server">
+	<!--  menu   -->
+	<div class="server-menu">
+		<div class="btn-group dropdown" dropdown>
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
+              系统未注册<span class="caret"></span>
+            </button>
+			<ul class="dropdown-menu" role="menu">
+				<li>
+					<a tabindex="-1" href>未注册</a>
+				</li>
+				<li>
+					<a tabindex="-1" href>开户系统</a>
+				</li>
+				<li>
+					<a tabindex="-1" href>关闭系统</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="btn-group dropdown">
+			<button type="button" class="btn btn-info">网络配置</button>
+		</div>
+
+		<div class="btn-group dropdown" dropdown>
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
+              部署模式已关闭<span class="caret"></span>
+            </button>
+			<ul class="dropdown-menu" role="menu">
+				<li>
+					<a tabindex="-1" href>开启部署模式</a>
+				</li>
+				<li>
+					<a tabindex="-1" href>退出部署模式</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="btn-group dropdown" dropdown>
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
+              服务器管理<span class="caret"></span>
+            </button>
+			<ul class="dropdown-menu" role="menu">
+				<li>
+					<a tabindex="-1" href>重启</a>
+				</li>
+				<li>
+					<a tabindex="-1" href>关机</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="btn-group dropdown" dropdown>
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
+              终端组管理<span class="caret"></span>
+            </button>
+			<ul class="dropdown-menu" role="menu">
+				<li class="dropdown-submenu">
+					<a tabindex="-1" href>机房组</a>
+					<ul class="dropdown-menu" role="menu">
+						<li>
+							<a tabindex="-1" href>重起</a>
+						</li>
+						<li>
+							<a tabindex="-1" href>关机</a>
+						</li>
+						<li class="dropdown-submenu">
+							<a tabindex="-1" href>自动登录镜像</a>
+							<ul class="dropdown-menu" role="menu">
+								<li>
+									<a tabindex="-1" href>ubuntu.img</a>
+								</li>
+								<li>
+									<a tabindex="-1" href>无</a>
+								</li>
+							</ul>
+						</li>
+
+					</ul>
+				</li>
+				<li class="dropdown-submenu">
+					<a tabindex="-1" href>办公组</a>
+					<ul class="dropdown-menu" role="menu">
+						<li>
+							<a tabindex="-1" href>重起</a>
+						</li>
+						<li>
+							<a tabindex="-1" href>关机</a>
+						</li>
+						<li class="dropdown-submenu">
+							<a tabindex="-1" href>自动登录镜像</a>
+							<ul class="dropdown-menu" role="menu">
+								<li>
+									<a tabindex="-1" href>win10.img</a>
+								</li>
+								<li>
+									<a tabindex="-1" href>无</a>
+								</li>
+							</ul>
+						</li>
+
+					</ul>
+				</li>
+				<li class="dropdown-submenu">
+					<a tabindex="-1" href>所有终端</a>
+					<ul class="dropdown-menu" role="menu">
+						<li>
+							<a tabindex="-1" href>重起</a>
+						</li>
+						<li>
+							<a tabindex="-1" href>关机</a>
+						</li>
+					</ul>
+				</li>
+
+			</ul>
+		</div>
+
+	</div>
+	<!--  title  -->
+	<div class="m-server-title">
+		<div class="title-body">
+			<h4><span>系统概况</span></h4>
+		</div>
+	</div>
+	<!--  运行情况    -->
+	<div class="server-zt m-box">
+		<div class="clearfix">
+			<div class="zt-left">
+				<h3>运行情况：良好</h3>
+				<ul class="left-numb">
+					<li class="col-xs-3">
+						<a>6</a>
+						<p>模板数</p>
+					</li>
+					<li class="col-xs-3">
+						<a>4</a>
+						<p>镜像数</p>
+					</li>
+					<li class="col-xs-3">
+						<a>3</a>
+						<p>用户组数</p>
+					</li>
+					<li class="col-xs-3">
+						<a>38</a>
+						<p>用户数</p>
+					</li>
+				</ul>
+			</div>
+			<div class="zt-right">
+				<div class="right-one col-xs-4">
+					<div class="right-round">
+						<div class="round-echarts" e-chart ui-options="{{echarts_option1}}"></div>
+						<div class="right-number"><span class="number-left">66%</span><i></i><span class="number-right">29G</span></div>
+					</div>
+					<p>镜像空间</p>
+				</div>
+				<div class="right-one col-xs-4">
+					<div class="right-round">
+						<div class="round-echarts" e-chart ui-options="{{echarts_option2}}"></div>
+						<div class="right-number"><span class="number-left">66%</span><i></i><span class="number-right">29G</span></div>
+					</div>
+					<p>网盘空间</p>
+				</div>
+				<div class="right-one col-xs-4">
+					<div class="right-round">
+						<div class="round-echarts" e-chart ui-options="{{echarts_option3}}"></div>
+						<div class="right-number"><span class="member-nb">15%</span></div>
+					</div>
+					<p>传输速率</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--  title  -->
+	<div class="m-server-title">
+		<div class="title-body">
+			<h4><span>系统概况</span></h4>
+		</div>
+	</div>
+	
+	<!--  终端概况   -->
+	<div class="server-terminal m-box">
+		<div class="ter-header row">
+			<div class="header-left col-xs-8">
+				<ul>
+					<li>
+						<a>216</a>
+						<p>终端授权数</p>
+					</li>
+					<li>
+						<a>216</a>
+						<p>终端组数</p>
+					</li>
+					<li>
+						<a>216</a>
+						<p>终端数</p>
+					</li>
+					<li>
+						<a>216</a>
+						<p>在线终端数</p>
+					</li>
+					<li>
+						<a>216</a>
+						<p>离线终端数</p>
+					</li>
+				</ul>
+			</div>
+			<div class="header-right col-xs-4">
+				<div class="form-group clearfix">
+					<label class="group-left control-label">终端组过滤：</label>
+					<div class="group-body">
+						<ui-select ng-model="table_data.is_menu_item" ng-change="fuceismenuChange()" theme="bootstrap">
+							<ui-select-match placeholder="选择是否菜单">{{$select.selected.title}}</ui-select-match>
+							<ui-select-choices group-by="'group'" repeat="item in table_data.is_menu_items | filter: $select.search">
+								<span ng-bind-html="item.title | highlight: $select.search"></span>
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--  table  -->
+		<div class="m-server-table">
+			<div class="table-responsive">
+				<div class="dataTables_wrapper dt-bootstrap no-footer">
+					<div class="dataTable_top">
+					</div>
+					<div class="row">
+						<div class="">
+							<table class="table table-striped m-b-none dataTable no-footer">
+								<thead>
+									<tr role="row">
+										<th>终端</th>
+										<th>终端状态</th>
+										<th>用户名</th>
+										<th>镜像名称</th>
+										<th>IP地址</th>
+										<th>最近登录</th>
+									</tr>
+								</thead>
+								<tbody class="ng-scope">
+									<tr role="row" class="odd" ng-repeat="item in table_data.table_res.rows">
+										<td>{{item.fucecode}}</td>
+										<td>{{item.fucename}}</td>
+										<td>{{item.fucelevel}}</td>
+										<td>{{item.fuceresource}}</td>
+										<td>{{item.fuceindex}}</td>
+										<td>{{item.fuceparentcode}}</td>
+									</tr>
+									<tr role="row" ng-if="table_data.table_res.rows.length < 1">
+										<td class="text-center" colspan="30">未找到数据</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 col-xs-12">
+							<div class="dataTables_length"><label>共76条记录，每页 
+									<select ng-model="table_data.form.pageSize" ng-change="table_data.selectChanged()" class="form-control input-sm">
+										<option value="10">10</option>
+										<option value="25">25</option>
+										<option value="50">50</option>
+										<option value="100">100</option>
+									</select>
+									 条</label></div>
+						</div>
+						<div class="col-sm-6 col-xs-12 text-right">
+							<pagination total-items="table_data.table_res.total" items-per-page="table_data.form.pageSize" ng-change="table_data.pageChanged()" ng-model="table_data.form.page" max-size="table_data.table_res.maxSize" num-pages="table_data.table_res.numPages" class="pagination-sm m-t-none m-b-none" boundary-links="true" rotate="false"></pagination>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
