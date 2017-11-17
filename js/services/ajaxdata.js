@@ -15,12 +15,13 @@ angular.module('app').factory('httpService', function ($http, $q) {
 	var http = {
 		dev:{
 			protocol:'http:',
-			hostname:'192.168.12.180',
-			port:'9000',
+			hostname:'192.168.13.195',
+			port:'80',
 			hash:''
 		}
 	}
 	http.dev.origin = http.dev.protocol + '//' + http.dev.hostname + ':' + http.dev.port;
+	//http.dev.origin = "";
 	http.dev.href = http.dev.origin + http.dev.hash;
 	
 	//
@@ -39,7 +40,8 @@ angular.module('app').factory('httpService', function ($http, $q) {
                 params: params
             })
                 .success(function (data, status, headers, config) {
-                    deferred.resolve(data);
+                	var temp_obj = {data:data,status:status,headers:headers,config:config};
+                    deferred.resolve(temp_obj);
                 })
                 .error(function (data, status, headers, config) {
                     deferred.reject('Service error ');
@@ -68,8 +70,8 @@ angular.module('app').factory('httpService', function ($http, $q) {
             $http({
                 url: url,
                 method: "POST",
-                headers: {'Content-Type': 'application/json'},
-                data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                data:$.param(data),
                 timeout:out,
                 params: params ? params : {}
             }).success(function (data, status, headers, config) {

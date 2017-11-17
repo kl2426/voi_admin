@@ -1,0 +1,18 @@
+<!--  确认弹窗  弹窗   -->
+
+<div class="modal-header g-modal-header" modal-move>
+	<button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title"></h4>
+</div>
+<div class="modal-body g-modal-body">
+	<div class="body-body">
+		<div class="body-main">
+			<p>{{title}}</p>
+		</div>
+	</div>
+</div>
+
+<div class="modal-footer g-modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+  </div>

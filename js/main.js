@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window','opCookie','httpService','globalFn',
-    function(              $scope,   $translate,   $localStorage,   $window,opCookie,httpService, globalFn ) {
+  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window','opCookie','httpService','globalFn','$rootScope','$state',
+    function(              $scope,   $translate,   $localStorage,   $window,opCookie,httpService, globalFn ,$rootScope,$state) {
       // add 'ie' classes to html
       var isIE = !!navigator.userAgent.match(/MSIE/i);
       isIE && angular.element($window.document.body).addClass('ie');
@@ -13,7 +13,7 @@ angular.module('app')
       // config
       $scope.app = {
         name: 'VOI云桌面管理系统',
-        version: '1.3.3',
+        version: 'v2.2.3',
         // for chart colors
         color: {
           primary: '#7266ba',
@@ -38,7 +38,7 @@ angular.module('app')
         },
         //   nav
         nav:[],
-        //   userInfo
+        //   userInfo  用户登录数据
         user_info:{}
       }
 
@@ -87,7 +87,7 @@ angular.module('app')
 						console.log(data)
 						//if(data.status == 200){
 						if(1){
-							var temp_nav = data;
+							var temp_nav = data.data;
 							//   组合code
 							if(temp_nav.length > 0){
 								globalFn.dg_tree(temp_nav,function(item){
@@ -130,12 +130,105 @@ angular.module('app')
       }
       
       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      //  ========================= 定时器 =============================
+			$scope.setglobaldata = {
+				timedatalist: [], //定时器数组
+				timer: { //定时器模板对象
+					interval: null,
+					Key: "", //定义的名称
+					keyctrl: "", //定义所属的控制器
+					fnStopAutoRefresh: function() {}, //定义开关的关闭
+					fnAutoRefresh: function() {}, //定义开关的打开
+					fnStopAutoRefreshfn: function(tm, fn) {
+						tm.fnStopAutoRefresh();
+					}, //定义开关的关闭方法
+					fnAutoRefreshfn: function(tm) {
+						if(tm.keyctrl != $state.current.name) {
+							tm.fnStopAutoRefresh();
+						} else {
+							if(tm.interval == null) {
+								tm.fnAutoRefresh();
+							}
+						}
+					}
+				},
+				addtimer: function(t) { //将数据加入到定时器数组
+					var isadd = true;
+					for(var i = 0; i < $scope.setglobaldata.timedatalist.length; i++) {
+						if($scope.setglobaldata.timedatalist[i].Key == t.key) {
+							$scope.setglobaldata.timedatalist[i].fnStopAutoRefresh(); //先关闭定时器
+							$scope.setglobaldata.timedatalist.splice(i, 1); //移除对象
+						}
+					}
+					if(isadd) {
+						$scope.setglobaldata.timedatalist.push(t);
+					}
+				},
+				gettimer: function(key) { //获取对象
+					var temp_timer = null;
+					for(var i = 0; i < $scope.setglobaldata.timedatalist.length; i++) {
+						if($scope.setglobaldata.timedatalist[i].Key == key) {
+							//temp_timer = $scope.setglobaldata.timedatalist[i];
+							$scope.setglobaldata.timedatalist[i].fnStopAutoRefresh(); //先关闭定时器
+							$scope.setglobaldata.timedatalist.splice(i, 1); //移除对象
+							break;
+						}
+					}
+					//return temp_timer ? temp_timer : angular.copy($scope.setglobaldata.timer);
+					return angular.copy($scope.setglobaldata.timer);
+				}
+			};
+			//console.log($state.current.name);
+			//   监听离开页面取消定时器
+			$rootScope.$on('$stateChangeSuccess',
+				function(event, toState, toParams, fromState, fromParams) {
+					//  
+					for(var indextm = 0; indextm < $scope.setglobaldata.timedatalist.length; indextm++) {
+						if($scope.setglobaldata.timedatalist[indextm].keyctrl == toState.name) {
+							$scope.setglobaldata.timedatalist[indextm].fnAutoRefresh();
+						} else {
+							$scope.setglobaldata.timedatalist[indextm].fnStopAutoRefresh();
+						}
+					}
+					
+					//    验证是否已登录
+					if('access.signin,access.signup,access.404'.indexOf('$state.current.name') < 0 && !opCookie.getCookie('user_info')){
+						//window.location.href = window.location.origin + window.location.pathname + '#/access/signin';
+					}
+				}
+			);
+			//  ========================= /定时器 =============================
+			
+			
+			
+			
+			
+			
+			
+			
+      
       //   run
       var run = function(){
       	//   取nav菜单
       	$scope.getNav();
       	//   取用户信息
-      	$scope.getUserInfo();
+      	//$scope.getUserInfo();
+      	
+      	//   用户信息
+      	if(opCookie.getCookie('user_info')){
+					$scope.app.user_info = JSON.parse(globalFn.tohanzi(opCookie.getCookie('user_info')));
+				}else{
+					$scope.app.user_info = {};
+				}
       }
       run();
       

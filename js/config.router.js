@@ -45,9 +45,9 @@ angular.module('app')
                   resolve: {
                       deps: ['$ocLazyLoad',
                         function( $ocLazyLoad ){
-                          return $ocLazyLoad.load(['ui.select']).then(
+                          return $ocLazyLoad.load(['ui.select','toaster']).then(
                               function(){
-                                 return $ocLazyLoad.load(['js/controllers/server/server.js']);
+                                 return $ocLazyLoad.load(['js/controllers/server/server.js','js/controllers/modal/server.js']);
                               }
                           );
                         }
@@ -60,19 +60,32 @@ angular.module('app')
                */
               .state('app.user', {
                   url: '/user',
-                  templateUrl: 'tpl/user/index.html'
+                  templateUrl: 'tpl/user/index.html',
+                  resolve: {
+                      deps: ['$ocLazyLoad',
+                        function( $ocLazyLoad ){
+                          return $ocLazyLoad.load(['ui.select']).then(
+                              function(){
+                                 return $ocLazyLoad.load(['js/controllers/user/user.js','js/controllers/modal/user.js']);
+                              }
+                          );
+                        }
+                      ]
+                  }
               })
               
               //  用户总览
               .state('app.user.list', {
                   url: '/list',
-                  templateUrl: 'tpl/user/list/index.html'
+                  templateUrl: 'tpl/user/list/index.html',
+                  controller: 'userListCtrl'
               })
               
               //  用户组总览
               .state('app.user.type', {
                   url: '/type',
-                  templateUrl: 'tpl/user/type/index.html'
+                  templateUrl: 'tpl/user/type/index.html',
+                  controller: 'userTypeCtrl'
               })
               
               /**
@@ -80,19 +93,32 @@ angular.module('app')
                */
               .state('app.terminal', {
                   url: '/terminal',
-                  templateUrl: 'tpl/terminal/index.html'
+                  templateUrl: 'tpl/terminal/index.html',
+                  resolve: {
+                      deps: ['$ocLazyLoad',
+                        function( $ocLazyLoad ){
+                          return $ocLazyLoad.load(['ui.select']).then(
+                              function(){
+                                 return $ocLazyLoad.load(['js/controllers/terminal/terminal.js']);
+                              }
+                          );
+                        }
+                      ]
+                  }
               })
               
               //  终端总览
               .state('app.terminal.list', {
                   url: '/list',
-                  templateUrl: 'tpl/terminal/list/index.html'
+                  templateUrl: 'tpl/terminal/list/index.html',
+                  controller: 'terminalListCtrl'
               })
               
               //  终端组总览
               .state('app.terminal.type', {
                   url: '/type',
-                  templateUrl: 'tpl/terminal/type/index.html'
+                  templateUrl: 'tpl/terminal/type/index.html',
+                  controller: 'terminalTypeCtrl'
               })
               
               
@@ -123,6 +149,36 @@ angular.module('app')
               })
               
               
+              /**
+               * 登录
+               */
+              .state('access', {
+                  url: '/access',
+                  template: '<div ui-view class="fade-in-right-big smooth"></div>',
+                  resolve: {
+                      deps: ['uiLoad',
+                        function( uiLoad ){
+                          return uiLoad.load( ['js/controllers/login/login.js'] );
+                      }]
+                  }
+              })
+              .state('access.signin', {
+                  url: '/signin',
+                  templateUrl: 'tpl/login/signin.html',
+                  
+              })
+              .state('access.signup', {
+                  url: '/signup',
+                  templateUrl: 'tpl/login/signup.html'
+              })
+              .state('access.forgotpwd', {
+                  url: '/forgotpwd',
+                  templateUrl: 'tpl/login/forgotpwd.html'
+              })
+              .state('access.404', {
+                  url: '/404',
+                  templateUrl: 'tpl/blocks/page_404.html'
+              })
               
               
               
@@ -143,7 +199,7 @@ angular.module('app')
               
               
               
-              
+              //////////////////////////////////////////////////////////////////////////////////////
               
               /**
                * 系统管理
@@ -469,38 +525,7 @@ angular.module('app')
                   url: '/lockme',
                   templateUrl: 'tpl/page_lockme.html'
               })
-              .state('access', {
-                  url: '/access',
-                  template: '<div ui-view class="fade-in-right-big smooth"></div>'
-              })
-              .state('access.signin', {
-                  url: '/signin',
-                  templateUrl: 'tpl/page_signin.html',
-                  resolve: {
-                      deps: ['uiLoad',
-                        function( uiLoad ){
-                          return uiLoad.load( ['js/controllers/signin.js'] );
-                      }]
-                  }
-              })
-              .state('access.signup', {
-                  url: '/signup',
-                  templateUrl: 'tpl/page_signup.html',
-                  resolve: {
-                      deps: ['uiLoad',
-                        function( uiLoad ){
-                          return uiLoad.load( ['js/controllers/signup.js'] );
-                      }]
-                  }
-              })
-              .state('access.forgotpwd', {
-                  url: '/forgotpwd',
-                  templateUrl: 'tpl/page_forgotpwd.html'
-              })
-              .state('access.404', {
-                  url: '/404',
-                  templateUrl: 'tpl/page_404.html'
-              })
+              
 
               // fullCalendar
               .state('app.calendar', {

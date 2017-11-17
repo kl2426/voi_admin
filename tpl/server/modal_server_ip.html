@@ -1,0 +1,155 @@
+<!--  服务器IP配置  弹窗   -->
+
+<div class="modal-header g-modal-header" modal-move>
+	<button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title"></h4>
+</div>
+<div class="modal-body g-modal-body m-modal-serverno">
+	<div class="body-body">
+		<div class="modal-body-title">服务器IP配置</div>
+		<div class="body-main">
+			<form class="">
+				<div class="m-modal-form row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">IP地址：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control disabled">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input disabled="disabled" type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-body-title">
+			<label class="checkbox i-checks modal-body-title-checkbox">
+        		<input type="checkbox"><i></i>启动DHCP服务
+        	</label>
+			DHCP网络配置
+		</div>
+		<div class="body-main">
+			<form class="">
+				<div class="m-modal-form row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">子网：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">子网掩码：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">子网范围：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label"><div>--</div></label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">路由地址：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">首选DNS：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">备用DNS：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal-footer g-modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+  </div>

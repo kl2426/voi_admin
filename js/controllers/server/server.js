@@ -1,11 +1,13 @@
-app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal', function($scope, $timeout, globalFn, httpService, $modal) {
+'use strict';
+
+app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal','toaster', function($scope, $timeout, globalFn, httpService, $modal,toaster) {
 
 	/**
 	 * 表格1
 	 */
 	$scope.table_data = {
-		//   是否菜单
-		is_menu_items: [{
+		//   用户组
+		user_items: [{
 				title: '全部',
 				val: ""
 			},
@@ -18,26 +20,22 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 				val: 0
 			},
 		],
-		is_menu_item: {
+		user_item: {
 			title: '全部',
 			val: ""
 		},
 		form: {
-			fucecode: "",
-			fuceismenu: "",
-			fucename: "",
-			fuceparentcode: "0",
-			ownerType: 0,
+			key: "",
 			page: 1,
 			pageSize: 10,
-			sortname: "a.FUCECREATETIME",
-			sortorder: "desc"
+			//sortname: "a.FUCECREATETIME",
+			//sortorder: "desc"
 		},
 		//   表格数据
 		table_res: {
-			code: "0001",
-			message: "ok",
-			rows: [],
+			retCode: 0,
+			//message: "ok",
+			row: [],
 			total: 2,
 			//
 			maxSize: 5
@@ -52,50 +50,196 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			findFunctionList($scope.table_data.form);
 		}
 	}
-
+	
+	
 	/**
-	 * 操作
+	 * 查询列表
 	 */
-	$scope.table_operate = function(str, item) {
-		console.log(str);
-		if(str == 'son') {
-			openSon(item);
-		} else if(str == 'del') {
-			menuDel(item);
-		} else if(str == 'add') {
-			openAdd('add', item, $scope.select_tree);
-		} else if(str == 'edit') {
-			openAdd('edit', item, $scope.select_tree);
-		} else if(str == 'role') {
-			openRole('role', item, $scope.select_tree);
-		}
+	var findFunctionList = function(form) {
+		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cliStatus',form)
+			.then(function(res) {
+				console.log(res);
+				if(res.status == 200 && res.data.retCode == 0) {
+					angular.extend($scope.table_data.table_res, res.data);
+					$scope.table_data.table_res.row = res.data.users;
+					console.log($scope.table_data)
+				} else {
+					$scope.table_data.table_res.row = [];
+				}
+			});
 	}
 
+	
+	
+
 	/**
-	 * 打开添加修改
+	 * 打开未注册弹窗
 	 */
-	var openAdd = function(str, item, select_item) {
+	$scope.openModalNO = function() {
+		
+		
+    
+    
 		var modalInstance = $modal.open({
-			templateUrl: 'tpl/xtgl/yhgl/cdgl/modal_add.html',
-			controller: 'modalAddXtglYhglCdglCtrl',
+			templateUrl: 'tpl/modal/server/modal_no.html',
+			controller: 'modalServerNOCtrl',
 			//size: size,
 			resolve: {
 				items: function() {
-					return {
-						'operate': str,
-						'item': item,
-						'select_item': select_item
-					};
+					return {};
 				}
 			}
 		});
 
 		modalInstance.result.then(function(selectedItem) {
+			console.log(selectedItem)
+        	toaster.pop('success','注册完成', '成功注册系统');
 			//$scope.selected = selectedItem;
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
 		});
 	}
+	
+	
+	
+	/**
+	 * 打开部署模式  -  弹窗
+	 */
+	$scope.openModalAdminPwd = function() {
+		
+    
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/modal/server/modal_admin_pwd.html',
+			controller: 'modalServerAdminPwdCtrl',
+			//size: size,
+			resolve: {
+				items: function() {
+					return {};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(selectedItem) {
+			console.log(selectedItem)
+        	toaster.pop('success','成功', '已进入部署模式');
+			//$scope.selected = selectedItem;
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	/**
+	 * 打开重起服务器 -  弹窗
+	 */
+	$scope.openModalAlert = function() {
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/modal/server/modal_alert.html',
+			controller: 'modalAlertCtrl',
+			windowClass: 'm-modal-alert',
+			size: 'sm',
+			resolve: {
+				items: function() {
+					return {'title':'重启服务器？'};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(selectedItem) {
+			console.log(selectedItem)
+        	toaster.pop('success','成功', '服务器已重起。');
+			//$scope.selected = selectedItem;
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	/**
+	 * 打开关机 -  弹窗
+	 */
+	$scope.openModalAlert2 = function() {
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/modal/server/modal_alert.html',
+			controller: 'modalAlertCtrl',
+			windowClass: 'm-modal-alert',
+			size: 'sm',
+			resolve: {
+				items: function() {
+					return {'title':'关闭服务器？'};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(selectedItem) {
+			console.log(selectedItem)
+        	toaster.pop('success','成功', '服务器已关机。');
+			//$scope.selected = selectedItem;
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	/**
+	 * 打开网络配置/服务器IP配置 -  弹窗
+	 */
+	$scope.openModalServerIp = function() {
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/server/modal_server_ip.html',
+			controller: 'modalServerIpCtrl',
+			resolve: {
+				items: function() {
+					return {'scope':$scope};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(selectedItem) {
+			console.log(selectedItem)
+        	toaster.pop('success','成功', '服务器已关机。');
+			//$scope.selected = selectedItem;
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 打开添加修改
@@ -156,22 +300,6 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	$scope.table_search = function() {
 		//
 		findFunctionList($scope.table_data.form);
-	}
-
-	/**
-	 * 查询列表
-	 */
-	var findFunctionList = function(form) {
-		httpService.ajaxGet('json/list.json')
-			.then(function(res) {
-				$scope.table_data.table_res.rows = res;
-//				if(res.status == 200 && res.data) {
-//					angular.extend($scope.table_data.table_res, res.data);
-//					console.log($scope.table_data)
-//				} else {
-//					$scope.table_data.table_res.rows = [];
-//				}
-			});
 	}
 
 	$scope.echarts_option1 = {

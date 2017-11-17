@@ -7,10 +7,10 @@
             </button>
 			<ul class="dropdown-menu" role="menu">
 				<li>
-					<a tabindex="-1" href>未注册</a>
+					<a tabindex="-1" ng-click="openModalNO()">未注册</a>
 				</li>
 				<li>
-					<a tabindex="-1" href>开户系统</a>
+					<a tabindex="-1">开户系统</a>
 				</li>
 				<li>
 					<a tabindex="-1" href>关闭系统</a>
@@ -19,7 +19,7 @@
 		</div>
 
 		<div class="btn-group dropdown">
-			<button type="button" class="btn btn-info">网络配置</button>
+			<button type="button" class="btn btn-info" ng-click="openModalServerIp()">网络配置</button>
 		</div>
 
 		<div class="btn-group dropdown" dropdown>
@@ -28,7 +28,7 @@
             </button>
 			<ul class="dropdown-menu" role="menu">
 				<li>
-					<a tabindex="-1" href>开启部署模式</a>
+					<a tabindex="-1" ng-click="openModalAdminPwd()">开启部署模式</a>
 				</li>
 				<li>
 					<a tabindex="-1" href>退出部署模式</a>
@@ -42,10 +42,10 @@
             </button>
 			<ul class="dropdown-menu" role="menu">
 				<li>
-					<a tabindex="-1" href>重启</a>
+					<a tabindex="-1" ng-click="openModalAlert()">重启</a>
 				</li>
 				<li>
-					<a tabindex="-1" href>关机</a>
+					<a tabindex="-1" ng-click="openModalAlert2()">关机</a>
 				</li>
 			</ul>
 		</div>

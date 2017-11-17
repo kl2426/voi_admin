@@ -268,4 +268,30 @@ angular.module('app').service('globalFn', function() {
     	return data_tree;
 	}
 	
+	//   字符串转unicode
+	this.tounicode = function(data)
+	{
+	   if(data == '') return '';
+	   var str =''; 
+	   for(var i=0;i<data.length;i++)
+	   {
+	      str+="\\u"+parseInt(data[i].charCodeAt(0),10).toString(16);
+	   }
+	   return str;
+	}
+	
+	this.tohanzi = function(data)
+	{
+		
+	    if(data == '') return '';
+	    data = data.split("\\u");
+	    if(data.length > 0 && data[0] == "")data.splice(0,1);
+	    var str ='';
+	    for(var i=0;i<data.length;i++)
+	    {
+	        str+=String.fromCharCode(parseInt(data[i],16).toString(10));
+	    }
+	    return str;
+	}
+	
 })
