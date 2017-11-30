@@ -1,0 +1,120 @@
+<!--  添加修改用户组   -->
+
+<div class="modal-header g-modal-header" modal-move>
+	<button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title"></h4>
+</div>
+<div class="modal-body g-modal-body m-modal-serverno">
+	<div class="body-body" style="{{(items.operate != 'edit') ? 'width: 100%;' : ''}}" >
+		<div class="modal-body-title">{{items.operate == 'copy' ? '镜像克隆' : '修改镜像'}}</div>
+		<div class="body-main">
+			<form class="">
+				<div class="m-modal-form row">
+					<div class=""  ng-class="{'col-xs-6 m-r-n' : items.operate != 'edit'}">
+						<div class="col-xs-12">
+							<div class="form-group">
+								<label class="group-left control-label">镜像名称：</label>
+								<div class="group-body">
+									<input type="text" ng-model="form.imgName" class="form-control" placeholder="输入镜像名称" />
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group">
+								<label class="group-left control-label">镜像模板：</label>
+								<div class="group-body">
+									<ui-select ng-model="form.tplId_item" ng-change="tplIdChange(form.tplId_item)" theme="bootstrap" ng-disabled="true">
+										<ui-select-match placeholder="选择镜像模板">{{$select.selected.name}}</ui-select-match>
+										<ui-select-choices group-by="'group'" repeat="item in form.tplId_items | filter: $select.search">
+											<span ng-bind-html="item.name | highlight: $select.search"></span>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12">
+							<div class="form-group">
+								<label class="group-left control-label">个性化：</label>
+								<div class="group-body">
+									<ui-select ng-model="form.isPersonal_item" ng-change="isPersonalChange(form.isPersonal_items)" theme="bootstrap" ng-disabled="items.operate == 'edit'">
+										<ui-select-match placeholder="选择个性化">{{$select.selected.name}}</ui-select-match>
+										<ui-select-choices group-by="'group'" repeat="item in form.isPersonal_items | filter: $select.search">
+											<span ng-bind-html="item.name | highlight: $select.search"></span>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-xs-12" ng-if="items.operate != 'edit'">
+							<div class="form-group">
+								<label class="group-left control-label">镜像图片：</label>
+								<div class="group-body">
+									<ui-select ng-model="form.pic_item" ng-change="picChange(form.pic_item)" theme="bootstrap" ng-disabled="items.operate == 'edit'">
+										<ui-select-match placeholder="选择镜像图片">{{$select.selected.name}}</ui-select-match>
+										<ui-select-choices group-by="'group'" repeat="item in form.pic_items | filter: $select.search">
+											<span ng-bind-html="item.name | highlight: $select.search"></span>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-xs-12">
+							<div class="form-group">
+								<label class="group-left control-label">授权终端组：</label>
+								<div class="group-body">
+									<ui-select ng-model="form.mid_item" ng-change="midChange(form.mid_item)" theme="bootstrap" ng-disabled="items.operate == 'edit'">
+										<ui-select-match placeholder="选择授权终端组">{{$select.selected.name}}</ui-select-match>
+										<ui-select-choices group-by="'group'" repeat="item in form.mid_items | filter: $select.search">
+											<span ng-bind-html="item.name | highlight: $select.search"></span>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-xs-12">
+							<div class="form-group">
+								<label class="group-left control-label">授权用户组：</label>
+								<div class="group-body">
+									<ui-select multiple ng-model="form.grps_item" ng-change="grpsChange(form.grps_item)" theme="bootstrap" ng-disabled="disabled">
+							            <ui-select-match placeholder="选择授权用户组">{{$item.name}}</ui-select-match>
+							            <ui-select-choices group-by="someGroupFn" repeat="item in form.grps_items | propsFilter: {name: $select.search}">
+							            	<div ng-bind-html="item.name | highlight: $select.search"></div>
+							            </ui-select-choices>
+							        </ui-select>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-xs-12">
+							<div class="form-group">
+								<label class="group-left control-label">镜像描述：</label>
+								<div class="group-body">
+									<textarea ng-model="form.desc" class="form-control" rows="3" placeholder="输入描述" maxlength="250" style="resize: vertical;"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-xs-6 m-l-n" ng-if="items.operate != 'edit'">
+						<div class="modal-copy-img">
+							<div class="title">镜像图片预览</div>
+							<div class="img">
+								<img ng-src="{{form.pic ? best_url + form.pic : ''}}" />
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal-footer g-modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+</div>

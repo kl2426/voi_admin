@@ -7,17 +7,17 @@
 				<div class="form-group">
 					<label class="group-left control-label">用户名：</label>
 					<div class="group-body">
-						<input type="text" class="form-control" />
+						<input type="text" ng-model="table_data.form.key" class="form-control" placeholder="输入用户组名" />
 					</div>
 				</div>
 			</div>
 			<div class="col-xs-3">
-				<a class="btn btn-info">查询</a>
+				<a class="btn btn-info" ng-click="table_search()">查询</a>
 			</div>
 		</div>
 		<div class="col-xs-12">
-			<a class="btn btn-info">新建用户</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a class="btn btn-info">批量删除</a>
+			<a class="btn btn-info" ng-click="table_operate('add',null)">新建用户组</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a class="btn btn-info" ng-click="batchDel()">批量删除</a>
 		</div>
 	</div>
 	
@@ -34,7 +34,12 @@
 							<table class="table table-striped m-b-none dataTable no-footer">
 								<thead>
 									<tr role="row">
-										<th>用户组名称</th>
+										<th class="table-checkbox">
+											<label class="checkbox i-checks">
+								        		<input ng-model="table_data.checkbox.allCheckbox" ng-change="table_data.checkbox.checkboxAll()" type="checkbox"><i></i>
+								        	</label>
+										</th>
+										<th>用户组名</th>
 										<th>组描述</th>
 										<th>镜像</th>
 										<th>网盘大小</th>
@@ -43,15 +48,33 @@
 									</tr>
 								</thead>
 								<tbody class="ng-scope">
-									<tr role="row" class="odd" ng-repeat="item in table_data.table_res.rows">
-										<td>{{item.fucecode}}</td>
-										<td>{{item.fucename}}</td>
-										<td>{{item.fucelevel}}</td>
-										<td>{{item.fuceresource}}</td>
-										<td>{{item.fuceindex}}</td>
-										<td>{{item.fuceparentcode}}</td>
+									<tr role="row" class="odd" ng-repeat="item in table_data.table_res.row">
+										<td class="table-checkbox">
+											<label class="checkbox i-checks">
+								        		<input ng-model="item.checked" ng-change="table_data.checkbox.checkboxClick()" type="checkbox"><i></i>
+								        	</label>
+										</td>
+										<td>{{item.name}}</td>
+										<td>{{item.desc}}</td>
+										<td>
+											<span class="label bg-primary" ng-repeat="item2 in item.imgs" style="margin-right: 3px;">{{item2[1]}}</span>
+										</td>
+										<td>{{item.diskSize}}</td>
+										<td>--</td>
+										<td class="m-operate" ng-if="item.id != 1 && item.id != 2">
+											<div class="btn-group" dropdown=""><button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button><button type="button" class="btn btn-xs btn-info dropdown-toggle" dropdown-toggle="" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span>  <span class="sr-only">修改</span></button>
+												<ul class="dropdown-menu" role="menu">
+													<li>
+														<a ng-click="table_operate('del',item)">删除</a>
+													</li>
+												</ul>
+											</div>
+										</td>
+										<td class="m-operate" ng-if="item.id == 1 || item.id == 2">
+											<!--<button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button>-->
+										</td>
 									</tr>
-									<tr role="row" ng-if="table_data.table_res.rows.length < 1">
+									<tr role="row" ng-if="table_data.table_res.row.length < 1">
 										<td class="text-center" colspan="30">未找到数据</td>
 									</tr>
 								</tbody>
@@ -60,7 +83,7 @@
 					</div>
 					<div class="row">
 						<div class="col-sm-6 col-xs-12">
-							<div class="dataTables_length"><label>共76条记录，每页 
+							<div class="dataTables_length"><label>共{{table_data.table_res.total}}条记录，每页 
 									<select ng-model="table_data.form.pageSize" ng-change="table_data.selectChanged()" class="form-control input-sm">
 										<option value="10">10</option>
 										<option value="25">25</option>

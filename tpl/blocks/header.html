@@ -31,7 +31,7 @@
         <!-- nabar right -->
         <div class="pull-right">
         	<div class="header-btn pull-left">
-            <a class="btn btn-info" ui-sref="access.signin">退出</a>
+            <a class="btn btn-info" ng-click="outlogin()">退出</a>
           </div>
           <div class="theme-switch pull-left">
           	<a class="theme-pink theme-black"></a>
@@ -56,7 +56,7 @@
               <span class="thumb-sm avatar m-t-n-sm m-b-n-sm m-l-sm">
                 <img src="img/a0.jpg" alt="...">
               </span>
-              <span class="user-name hidden-sm hidden-md">{{app.user_info.user}}</span>
+              <span class="user-name hidden-sm hidden-md">{{app.user_info.user ? app.user_info.user : '&nbsp;'}}</span>
             </a>
           </li>
         </ul>

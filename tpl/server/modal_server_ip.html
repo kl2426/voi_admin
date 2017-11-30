@@ -14,12 +14,27 @@
 						<div class="form-group">
 							<label class="group-left control-label">IP地址：</label>
 							<div class="group-body">
-								<div class="m-server-ip form-control disabled">
+								<div class="m-server-ip form-control">
 									<div class="server-ip-nb">
-										<div class="server-ip-input"><input disabled="disabled" type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" value="255" ng-keyup="bindKeyUp($event)" maxlength="4" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[0]" ng-keyup="bindKeyUp($event,0)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[1]" ng-keyup="bindKeyUp($event,1)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[2]" ng-keyup="bindKeyUp($event,2)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[3]" ng-keyup="bindKeyUp($event,3)" maxlength="3" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">子网掩码：</label>
+							<div class="group-body">
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[0]" ng-keyup="bindKeyUp($event,0)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[1]" ng-keyup="bindKeyUp($event,1)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[2]" ng-keyup="bindKeyUp($event,2)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[3]" ng-keyup="bindKeyUp($event,3)" maxlength="3" onfocus="this.select();" /></div>
 									</div>
 								</div>
 							</div>
@@ -28,13 +43,13 @@
 				</div>
 			</form>
 		</div>
-		<div class="modal-body-title">
+		<div class="modal-body-title hidden">
 			<label class="checkbox i-checks modal-body-title-checkbox">
         		<input type="checkbox"><i></i>启动DHCP服务
         	</label>
 			DHCP网络配置
 		</div>
-		<div class="body-main">
+		<div class="body-main hidden">
 			<form class="">
 				<div class="m-modal-form row">
 					<div class="col-xs-12">

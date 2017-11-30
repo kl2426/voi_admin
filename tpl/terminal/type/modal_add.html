@@ -1,0 +1,67 @@
+<!--  添加修改用户组   -->
+
+<div class="modal-header g-modal-header" modal-move>
+	<button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title"></h4>
+</div>
+<div class="modal-body g-modal-body m-modal-serverno">
+	<div class="body-body">
+		<div class="modal-body-title">{{items.operate == 'edit' ? '修改终端组' : '新建终端组'}}</div>
+		<div class="body-main">
+			<form class="">
+				<div class="m-modal-form row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">终端组名称：</label>
+							<div class="group-body">
+								<input type="text" ng-model="form.name" ng-disabled="items.operate != 'add'" class="form-control" placeholder="输入终端组名称" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">离线模式：</label>
+							<div class="group-body">
+								<ui-select ng-model="offline.item" ng-change="offlineChange(offline.item)" theme="bootstrap">
+									<ui-select-match placeholder="选择离线模式">{{$select.selected.name}}</ui-select-match>
+									<ui-select-choices group-by="'group'" repeat="item in offline.items | filter: $select.search">
+										<span ng-bind-html="item.name | highlight: $select.search"></span>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">镜像授权：</label>
+							<div class="group-body">
+								<ui-select multiple ng-model="imgs.item" ng-change="imgsChange(imgs.item)" theme="bootstrap" ng-disabled="disabled">
+						            <ui-select-match placeholder="选择镜像">{{$item.imgs_ids.name}}</ui-select-match>
+						            <ui-select-choices group-by="someGroupFn" repeat="item in imgs.items | propsFilter: {name: $select.search}">
+						            	<div ng-bind-html="item.imgs_ids.name | highlight: $select.search"></div>
+						            </ui-select-choices>
+						        </ui-select>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">描述：</label>
+							<div class="group-body">
+								<textarea ng-model="form.desc" class="form-control" rows="3" placeholder="输入描述" maxlength="250" style="resize: vertical;"></textarea>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal-footer g-modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+</div>

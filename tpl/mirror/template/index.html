@@ -1,1 +1,83 @@
-<div>index</div>
+<div class="g-content m-server m-template">
+	
+	<div class="clearfix">
+		<div class="col-xs-12 server-menu">
+			<a class="btn btn-info" ng-click="tpls_operate('add', null)">新建镜像模板</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		</div>
+	</div>
+	
+	<!--  终端概况   -->
+	<div class="m-template">
+		<ul class="template-main">
+			<li class="one m-box" ng-repeat="(index, item) in table_data.table_res.row" ng-class="{'active':item.is_open != true}">
+				<span class="one-top-nb " ng-class="{0:'icon-imgs-tag2',1:'icon-imgs-tag1'}[item.usable]">{{index + 1}}</span>
+				<div class="one-top">
+					<div class="top-header clearfix">
+						<h3><span>模板名称：{{item.name}}</span><span>路径：</span></h3>
+						<div class="top-right">
+							<a class="btn btn-primary btn-xs" ng-click="tpls_operate('edit', item)">编辑</a>
+							<a class="btn btn-primary btn-xs" ng-click="item_open(item)">{{!item.is_open ? '展开' : '收起'}}</a>
+							<a class="btn btn-primary btn-xs" ng-click="tpls_operate('copy', item)">克隆</a>
+							<a class="btn btn-primary btn-xs" ng-click="tpls_operate('del', item)">删除</a>
+						</div>
+					</div>
+					<div class="top-main">
+						<div class="row">
+							<div class="col-xs-12">模板描述：{{item.desc}}</div>
+							<div class="col-xs-3">操作系统：
+								<span ng-if="item.osType == 1">win7</span>
+								<span ng-if="item.osType == 2">win10</span>
+							</div>
+							<div class="col-xs-3">操作位宽：{{item.systemBit}}</div>
+							<div class="col-xs-3">镜像大小：{{item.size}}G</div>
+							<div class="col-xs-3">是否可用：{{item.usable == 1 ? '可用' : '不可用'}}</div>
+						</div>
+					</div>
+				</div>
+				<div class="one-list">
+					<div class="one-list-sj"></div>
+					<table>
+						<tr>
+							<th>镜像名称</th>
+							<th>镜像路径</th>
+							<th>镜像版本</th>
+							<th>绑定终端组</th>
+							<th>操作</th>
+						</tr>
+						<tr ng-repeat="item2 in item.imgs">
+							<td>{{item2.name}}</td>
+							<td></td>
+							<td>{{item2.ver}}</td>
+							<td>{{item2.group}}</td>
+							<td>
+								<a ng-click="imgs_operate('edit',item2)" title="编辑"><i class="icon-tmp-edit"></i></a>
+								<a ng-click="imgs_operate('del',item2)" title="删除"><i class="icon-tmp-del"></i></a>
+								<a ng-click="imgs_operate('new', item, item2)" title="应用为模板"><i class="icon-tmp-tmp"></i></a>
+							</td>
+						</tr>
+						<tr ng-if="item.imgs.length < 1">
+							<td colspan="30">无数据</td>
+						</tr>
+					</table>
+				</div>
+			</li>
+			
+			<li class="one m-box active" ng-if="table_data.table_res.row.length < 1">
+				<span class="one-top-nb icon-imgs-tag1">0</span>
+				<div class="one-top">
+					<div class="top-header clearfix">
+						<h3><span>无模板数据</span></h3>
+						<div class="top-right">
+						</div>
+					</div>
+					<div class="top-main">
+						<div class="row">
+							<div class="col-xs-12">&nbsp;</div>
+							<div class="col-xs-12">&nbsp;</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

@@ -1,1 +1,254 @@
-<div>index</div>
+<div class="g-content m-deploy">
+	<div class="deploy-title">
+		<span>当前部署模式状态：<font color="green">已开启</font><font color="red">关闭</font></span><a class="btn btn-info">退出部署模式</a>
+	</div>	
+	<!--  s1  -->
+	<div class="deploy-box one hidden">
+		<div class="one-title"><span>步骤一：开启部署模式</span></div>
+		<div class="one-body">
+			<div class="one-body-s1">
+				<p><i class="fa  fa-exclamation-circle"></i>在终端固件升级或分发镜像前必须开启部署模式~！</p>
+				<div class="text-center"><a class="btn btn-info">开启部署模式</a></div>
+				<div class="next text-right"><a class="btn btn-info">下一步</a></div>
+			</div>
+		</div>
+	</div>
+	<!--  s2  -->
+	<div class="deploy-box one hidden">
+		<div class="one-title"><span>步骤二：选择终端固件升级或分发镜像</span></div>
+		<div class="one-body">
+			<div class="one-body-s2">
+				<p>请选择终端固件升级或分发镜像进行下一步</p>
+				<div>
+					<label class="checkbox i-checks m-l-md m-b-md">
+			          <input type="checkbox" ng-model="oneAtATime1"><i></i>
+			          终端固件升级
+			        </label>
+			        <label class="checkbox i-checks m-l-md m-b-md">
+			          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+			          分发镜像
+			        </label>
+				</div>
+				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+			</div>
+		</div>
+	</div>
+	<!--  s3  -->
+	<div class="deploy-box one hidden">
+		<div class="one-title"><span>步骤三：选择终端组</span></div>
+		<div class="one-body">
+			<div class="one-body-s3">
+				<p>请选择终端组进入部署模式</p>
+				<div class="s3-main">
+					<div class="row">
+						<div class="col-xs-4">
+							<div class="form-group">
+								<label class="group-left control-label">终端组选择：</label>
+								<div class="group-body">
+									<ui-select ng-model="form.tplId_item" ng-change="tplIdChange(form.tplId_item)" theme="bootstrap" ng-disabled="true">
+										<ui-select-match placeholder="选择镜像模板">{{$select.selected.name}}</ui-select-match>
+										<ui-select-choices group-by="'group'" repeat="item in form.tplId_items | filter: $select.search">
+											<span ng-bind-html="item.name | highlight: $select.search"></span>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div>
+						<label class="checkbox i-checks m-l-md m-b-md">
+				          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+				          重起所选终端组
+				        </label>
+					</div>
+				</div>
+				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!--  s4  -->
+	<div class="deploy-box one hidden">
+		<div class="one-title"><span>步骤四：等待终端进入部署模式</span></div>
+		<div class="one-body">
+			<div class="one-body-s4">
+				<p>等待终端进入部署模式...</p>
+				<div class="s4-main">
+					<div class="title">
+						<span>机房组的终端数：18</span>
+						<span>已进入部署模式的终端数：15</span>
+					</div>
+					<div class="s4-table">
+						<div class="s4-bg"></div>
+						<div class="s4-th">
+							<span>名称</span>
+							<span>IP地址</span>
+						</div>
+						<div class="s4-td">
+							<div class="td">
+								<span>0101</span>
+								<span>192.168.0.11</span>	
+							</div>
+							<div class="td">
+								<span>0101</span>
+								<span>0101</span>	
+							</div>
+							<div class="td">
+								<span>0101</span>
+								<span>0101</span>	
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+			</div>
+		</div>
+	</div>
+	
+	<!--  s5  -->
+	<div class="deploy-box one hidden">
+		<div class="one-title"><span>步骤五：选择固件</span></div>
+		<div class="one-body">
+			<div class="one-body-s5">
+				<p>请选择固件对机房组进行终端固件升级</p>
+				<div class="s5-main">
+					<div class="row">
+						<div class="col-xs-6">
+							<div class="form-group">
+								<label class="group-left control-label">固件选择：</label>
+								<div class="group-body">
+									<input type="file" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!--  s6  -->
+	<div class="deploy-box one">
+		<div class="one-title"><span>步骤六：选择镜像</span></div>
+		<div class="one-body">
+			<div class="one-body-s4 one-body-s6">
+				<div class="s4-main">
+					<div class="title clearfix">
+						<span>请选择镜像对机房组进行部署</span>
+						<span class="pull-right">
+							<label class="checkbox i-checks m-l-md m-b-md">
+					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+					          清除终端原有镜像
+					        </label>	
+						</span>
+					</div>
+					<div class="s4-table">
+						<div class="s4-th">
+							<span>
+								<label class="checkbox i-checks m-l-md m-b-md">
+					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+					        镜像名称
+					        </label>	
+							</span>
+							<span>最近部署</span>
+							<span>部署数量</span>
+						</div>
+						<div class="s4-td">
+							<div class="td">
+								<span>
+									<label class="checkbox i-checks m-l-md m-b-md">
+					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+					        win7.img
+					        </label>
+								</span>
+								<span>2017-09-21 11:05</span>	
+								<span>5</span>	
+							</div>
+							<div class="td">
+								<span>
+									<label class="checkbox i-checks m-l-md m-b-md">
+					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+					        win7.img
+					        </label>
+								</span>
+								<span>2017-09-21 11:05</span>	
+								<span>5</span>	
+							</div>
+							<div class="td">
+								<span>
+									<label class="checkbox i-checks m-l-md m-b-md">
+					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+					        win7.img
+					        </label>
+								</span>
+								<span>2017-09-21 11:05</span>	
+								<span>5</span>	
+							</div>
+							<div class="td">
+								<span>
+									<label class="checkbox i-checks m-l-md m-b-md">
+					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+					        win7.img
+					        </label>
+								</span>
+								<span>2017-09-21 11:05</span>	
+								<span>5</span>	
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">开始部署</a></div>
+				
+				<div class="s6-bs row">
+					<div class="col-xs-6">
+						<div class="bs-left">
+							<p>部署终端列表&nbsp;&nbsp;18</p>
+							<span>正在部署中...</span>
+							<div class="s4-table">
+								<div class="s4-bg"></div>
+								<div class="s4-th">
+									<span>名称</span>
+									<span>IP地址</span>
+								</div>
+								<div class="s4-td">
+									<div class="td">
+										<span>0101</span>
+										<span>192.168.0.11</span>	
+									</div>
+									<div class="td">
+										<span>0101</span>
+										<span>0101</span>	
+									</div>
+									<div class="td">
+										<span>0101</span>
+										<span>0101</span>	
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="bs-right">
+							<p>部署进度</p>
+							<div class="right-jd">
+								<p>总进度（1/2）</p>
+					            <progressbar class="progress-striped active m-b-sm" value="20" type="success"><b>20%</b></progressbar>
+							</div>
+							<div class="right-jd">
+								<p>当前进度&nbsp;&nbsp;win7.img&nbsp;&nbsp;21.3M/1.2G</p>
+					            <progressbar class="progress-striped active m-b-sm" value="20" type="success"><b>20%</b></progressbar>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+</div>

@@ -15,7 +15,7 @@ angular.module('app').factory('httpService', function ($http, $q) {
 	var http = {
 		dev:{
 			protocol:'http:',
-			hostname:'192.168.13.195',
+			hostname:'192.168.13.32',
 			port:'80',
 			hash:''
 		}

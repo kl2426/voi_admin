@@ -3,41 +3,41 @@
 	<div class="server-menu">
 		<div class="btn-group dropdown" dropdown>
 			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
-              系统未注册<span class="caret"></span>
+              系统{{!app.registerd ? '未注册' : '已注册'}}<span class="caret"></span>
             </button>
 			<ul class="dropdown-menu" role="menu">
-				<li>
-					<a tabindex="-1" ng-click="openModalNO()">未注册</a>
+				<li ng-if="!app.registerd">
+					<a tabindex="-1" class="btn" ng-click="openModalNO()">未注册</a>
 				</li>
 				<li>
-					<a tabindex="-1">开户系统</a>
+					<a tabindex="-1" class="btn" ng-disabled="!app.registerd">开户系统</a>
 				</li>
 				<li>
-					<a tabindex="-1" href>关闭系统</a>
+					<a tabindex="-1" class="btn" ng-disabled="!app.registerd">关闭系统</a>
 				</li>
 			</ul>
 		</div>
 
 		<div class="btn-group dropdown">
-			<button type="button" class="btn btn-info" ng-click="openModalServerIp()">网络配置</button>
+			<button type="button" class="btn btn-info" ng-disabled="!app.registerd" ng-click="openModalServerIp()">网络配置</button>
 		</div>
 
 		<div class="btn-group dropdown" dropdown>
-			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
-              部署模式已关闭<span class="caret"></span>
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="!app.registerd">
+              部署模式{{app.deployOn ? '已开启' : '已关闭'}}<span class="caret"></span>
             </button>
 			<ul class="dropdown-menu" role="menu">
 				<li>
 					<a tabindex="-1" ng-click="openModalAdminPwd()">开启部署模式</a>
 				</li>
 				<li>
-					<a tabindex="-1" href>退出部署模式</a>
+					<a tabindex="-1" ng-click="openModalAdminPwdExit()">退出部署模式</a>
 				</li>
 			</ul>
 		</div>
 
 		<div class="btn-group dropdown" dropdown>
-			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="!app.registerd">
               服务器管理<span class="caret"></span>
             </button>
 			<ul class="dropdown-menu" role="menu">
@@ -51,64 +51,43 @@
 		</div>
 
 		<div class="btn-group dropdown" dropdown>
-			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="!app.registerd">
               终端组管理<span class="caret"></span>
             </button>
 			<ul class="dropdown-menu" role="menu">
-				<li class="dropdown-submenu">
-					<a tabindex="-1" href>机房组</a>
+				<li class="dropdown-submenu" ng-repeat="item in grps">
+					<a tabindex="-1" href>{{item.name}}</a>
 					<ul class="dropdown-menu" role="menu">
 						<li>
-							<a tabindex="-1" href>重起</a>
+							<a tabindex="-1" ng-click="openModalCgCtl('reboot',item)">重起</a>
 						</li>
 						<li>
-							<a tabindex="-1" href>关机</a>
+							<a tabindex="-1" ng-click="openModalCgCtl('shutdown',item)">关机</a>
 						</li>
 						<li class="dropdown-submenu">
 							<a tabindex="-1" href>自动登录镜像</a>
 							<ul class="dropdown-menu" role="menu">
-								<li>
-									<a tabindex="-1" href>ubuntu.img</a>
+								<li ng-repeat="item2 in item.imgs">
+									<a tabindex="-1" ng-class="{'active':item2.seleced == 1}" ng-click="openModalAutoImg(item.id,item2.id)"><i class="fa fa-check"></i>{{item2.name}}</a>
 								</li>
 								<li>
-									<a tabindex="-1" href>无</a>
+									<a tabindex="-1" ng-click="openModalAutoImg(item.id, 0)">无</a>
 								</li>
 							</ul>
 						</li>
 
 					</ul>
 				</li>
-				<li class="dropdown-submenu">
-					<a tabindex="-1" href>办公组</a>
-					<ul class="dropdown-menu" role="menu">
-						<li>
-							<a tabindex="-1" href>重起</a>
-						</li>
-						<li>
-							<a tabindex="-1" href>关机</a>
-						</li>
-						<li class="dropdown-submenu">
-							<a tabindex="-1" href>自动登录镜像</a>
-							<ul class="dropdown-menu" role="menu">
-								<li>
-									<a tabindex="-1" href>win10.img</a>
-								</li>
-								<li>
-									<a tabindex="-1" href>无</a>
-								</li>
-							</ul>
-						</li>
-
-					</ul>
-				</li>
+				
+				
 				<li class="dropdown-submenu">
 					<a tabindex="-1" href>所有终端</a>
 					<ul class="dropdown-menu" role="menu">
 						<li>
-							<a tabindex="-1" href>重起</a>
+							<a tabindex="-1" ng-click="openModalCgCtl('reboot',null,'all')">重起</a>
 						</li>
 						<li>
-							<a tabindex="-1" href>关机</a>
+							<a tabindex="-1" ng-click="openModalCgCtl('shutdown',null,'all')">关机</a>
 						</li>
 					</ul>
 				</li>
@@ -130,19 +109,19 @@
 				<h3>运行情况：良好</h3>
 				<ul class="left-numb">
 					<li class="col-xs-3">
-						<a>6</a>
+						<a>{{sys.tpls}}</a>
 						<p>模板数</p>
 					</li>
 					<li class="col-xs-3">
-						<a>4</a>
+						<a>{{sys.imgs}}</a>
 						<p>镜像数</p>
 					</li>
 					<li class="col-xs-3">
-						<a>3</a>
+						<a>{{sys.userGrps}}</a>
 						<p>用户组数</p>
 					</li>
 					<li class="col-xs-3">
-						<a>38</a>
+						<a>{{sys.users}}</a>
 						<p>用户数</p>
 					</li>
 				</ul>
@@ -151,7 +130,7 @@
 				<div class="right-one col-xs-4">
 					<div class="right-round">
 						<div class="round-echarts" e-chart ui-options="{{echarts_option1}}"></div>
-						<div class="right-number"><span class="number-left">66%</span><i></i><span class="number-right">29G</span></div>
+						<div class="right-number"><span class="number-left">{{sys.img_obj.used}}%</span><i></i><span class="number-right">{{sys.img_obj.diskSpace}}G</span></div>
 					</div>
 					<p>镜像空间</p>
 				</div>
@@ -176,7 +155,7 @@
 	<!--  title  -->
 	<div class="m-server-title">
 		<div class="title-body">
-			<h4><span>系统概况</span></h4>
+			<h4><span>终端概况</span></h4>
 		</div>
 	</div>
 	
@@ -186,23 +165,23 @@
 			<div class="header-left col-xs-8">
 				<ul>
 					<li>
-						<a>216</a>
+						<a>{{sys.clilimit}}</a>
 						<p>终端授权数</p>
 					</li>
 					<li>
-						<a>216</a>
+						<a>{{sys.cliGrpNum}}</a>
 						<p>终端组数</p>
 					</li>
 					<li>
-						<a>216</a>
+						<a>{{sys.pageSum}}</a>
 						<p>终端数</p>
 					</li>
 					<li>
-						<a>216</a>
+						<a>{{sys.onlines}}</a>
 						<p>在线终端数</p>
 					</li>
 					<li>
-						<a>216</a>
+						<a>{{sys.offlines}}</a>
 						<p>离线终端数</p>
 					</li>
 				</ul>
@@ -211,10 +190,10 @@
 				<div class="form-group clearfix">
 					<label class="group-left control-label">终端组过滤：</label>
 					<div class="group-body">
-						<ui-select ng-model="table_data.is_menu_item" ng-change="fuceismenuChange()" theme="bootstrap">
-							<ui-select-match placeholder="选择是否菜单">{{$select.selected.title}}</ui-select-match>
-							<ui-select-choices group-by="'group'" repeat="item in table_data.is_menu_items | filter: $select.search">
-								<span ng-bind-html="item.title | highlight: $select.search"></span>
+						<ui-select ng-model="table_data.grp_item" ng-change="grpChange(table_data.grp_item)" theme="bootstrap">
+							<ui-select-match placeholder="选择终端组">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices group-by="'group'" repeat="item in table_data.grp_items | filter: $select.search">
+								<span ng-bind-html="item.name | highlight: $select.search"></span>
 							</ui-select-choices>
 						</ui-select>
 					</div>
@@ -241,15 +220,20 @@
 									</tr>
 								</thead>
 								<tbody class="ng-scope">
-									<tr role="row" class="odd" ng-repeat="item in table_data.table_res.rows">
-										<td>{{item.fucecode}}</td>
-										<td>{{item.fucename}}</td>
-										<td>{{item.fucelevel}}</td>
-										<td>{{item.fuceresource}}</td>
-										<td>{{item.fuceindex}}</td>
-										<td>{{item.fuceparentcode}}</td>
+									<tr role="row" class="odd" ng-repeat="item in table_data.table_res.row">
+										<td>{{item.id}}</td>
+										<td>
+											<span ng-if="item.status == 1" class="label bg-primary" style="margin-right: 3px;">启用</span>
+											<span ng-if="item.status == 0" class="label bg-danger" style="margin-right: 3px;">禁用</span>
+										</td>
+										<td>{{item.user}}</td>
+										<td>
+											<span class="label bg-primary" ng-repeat="item2 in item.imgs" style="margin-right: 3px;">{{item2[1]}}</span>
+										</td>
+										<td>{{item.ip}}</td>
+										<td>{{item.loginTime}}</td>
 									</tr>
-									<tr role="row" ng-if="table_data.table_res.rows.length < 1">
+									<tr role="row" ng-if="table_data.table_res.row.length < 1">
 										<td class="text-center" colspan="30">未找到数据</td>
 									</tr>
 								</tbody>
@@ -258,7 +242,7 @@
 					</div>
 					<div class="row">
 						<div class="col-sm-6 col-xs-12">
-							<div class="dataTables_length"><label>共76条记录，每页 
+							<div class="dataTables_length"><label>共{{table_data.table_res.total}}条记录，每页 
 									<select ng-model="table_data.form.pageSize" ng-change="table_data.selectChanged()" class="form-control input-sm">
 										<option value="10">10</option>
 										<option value="25">25</option>

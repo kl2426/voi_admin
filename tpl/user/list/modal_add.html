@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body g-modal-body m-modal-serverno">
 	<div class="body-body">
-		<div class="modal-body-title">{{items.operate == 'edit' ? '修改用户' : '添加用户'}}</div>
+		<div class="modal-body-title">{{items.operate == 'edit' ? '修改用户' : '新建用户'}}</div>
 		<div class="body-main">
 			<form class="">
 				<div class="m-modal-form row">
@@ -14,7 +14,31 @@
 						<div class="form-group">
 							<label class="group-left control-label">用户名：</label>
 							<div class="group-body">
-								<input type="text" ng-model="form.name" class="form-control" />
+								<input type="text" ng-model="form.name" ng-disabled="items.operate != 'add'" class="form-control" placeholder="输入用户名" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12" ng-if="items.operate == 'add'">
+						<div class="form-group">
+							<label class="group-left control-label">密码：</label>
+							<div class="group-body">
+								<input type="text" class="form-control" disabled="disabled" placeholder="00000000（初始密码8个零）" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12" ng-if="items.operate == 'edit'">
+						<div class="form-group">
+							<label class="group-left control-label">原密码：</label>
+							<div class="group-body">
+								<input type="password" ng-model="form.pwd" class="form-control" placeholder="输入原密码" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12" ng-if="items.operate == 'edit'">
+						<div class="form-group">
+							<label class="group-left control-label">新密码：</label>
+							<div class="group-body">
+								<input type="text" ng-model="form.newpwd" class="form-control" placeholder="输入新密码" />
 							</div>
 						</div>
 					</div>
@@ -22,7 +46,7 @@
 						<div class="form-group">
 							<label class="group-left control-label">真实姓名：</label>
 							<div class="group-body">
-								<input type="text" ng-model="form.realname" class="form-control" />
+								<input type="text" ng-model="form.realName" class="form-control" />
 							</div>
 						</div>
 					</div>
@@ -30,7 +54,7 @@
 						<div class="form-group">
 							<label class="group-left control-label">用户组：</label>
 							<div class="group-body">
-								<ui-select ng-model="groups.item" ng-change="groupsChange()" theme="bootstrap">
+								<ui-select ng-model="groups.item" ng-change="groupsChange(groups.item)" theme="bootstrap">
 									<ui-select-match placeholder="选择用户组">{{$select.selected.name}}</ui-select-match>
 									<ui-select-choices group-by="'group'" repeat="item in groups.items | filter: $select.search">
 										<span ng-bind-html="item.name | highlight: $select.search"></span>
@@ -39,16 +63,17 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-12">
+					<div class="col-xs-12" ng-if="items.operate != 'add' && form.gid == 1">
 						<div class="form-group">
 							<label class="group-left control-label">绑定终端组：</label>
 							<div class="group-body">
-								<ui-select ng-model="terminals.item" ng-change="terminalsChange()" theme="bootstrap">
+								<ui-select ng-model="terminals.item" ng-change="terminalsChange(terminals.item)" theme="bootstrap">
 									<ui-select-match placeholder="选择终端组">{{$select.selected.name}}</ui-select-match>
 									<ui-select-choices group-by="'group'" repeat="item in terminals.items | filter: $select.search">
 										<span ng-bind-html="item.name | highlight: $select.search"></span>
 									</ui-select-choices>
 								</ui-select>
+								<p style="margin-top: 5px;font-size: 12px;color: #999;">注：设置当前用户为所选终端组的管理员</p>
 							</div>
 						</div>
 					</div>

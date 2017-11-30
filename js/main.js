@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window','opCookie','httpService','globalFn','$rootScope','$state',
-    function(              $scope,   $translate,   $localStorage,   $window,opCookie,httpService, globalFn ,$rootScope,$state) {
+  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window','opCookie','httpService','globalFn','$rootScope','$state','toaster','$modal',
+    function(              $scope,   $translate,   $localStorage,   $window,opCookie,httpService, globalFn ,$rootScope,$state,toaster,$modal) {
       // add 'ie' classes to html
       var isIE = !!navigator.userAgent.match(/MSIE/i);
       isIE && angular.element($window.document.body).addClass('ie');
@@ -39,7 +39,11 @@ angular.module('app')
         //   nav
         nav:[],
         //   userInfo  用户登录数据
-        user_info:{}
+        user_info:{},
+        //   系统是否注册 0 未注册   1  已注册 
+        registerd:1,
+        //   是否进入部署模式  0  1已进入
+        deployOn:0
       }
 
       // save settings to local storage
@@ -132,7 +136,35 @@ angular.module('app')
       
       
       
-      
+      /**
+       * 退出
+       */
+      $scope.outlogin = function(){
+				var modalInstance = $modal.open({
+					templateUrl: 'tpl/modal/server/modal_alert.html',
+					controller: 'modalAlertCtrl',
+					windowClass: 'm-modal-alert',
+					size: 'sm',
+					resolve: {
+						items: function() {
+							return {'title':'确定要退出吗？'};
+						},
+						deps: ['$ocLazyLoad',
+	            function( $ocLazyLoad ){
+             		return $ocLazyLoad.load(['js/controllers/modal/server.js']);
+	            }
+	          ]
+					}
+				});
+		
+				modalInstance.result.then(function(bol) {
+					if(bol){
+						$state.go('access.signin');
+					}
+				}, function() {
+					//console.log('Modal dismissed at: ' + new Date());
+				});
+			}
       
       
       
@@ -191,7 +223,6 @@ angular.module('app')
 			//   监听离开页面取消定时器
 			$rootScope.$on('$stateChangeSuccess',
 				function(event, toState, toParams, fromState, fromParams) {
-					//  
 					for(var indextm = 0; indextm < $scope.setglobaldata.timedatalist.length; indextm++) {
 						if($scope.setglobaldata.timedatalist[indextm].keyctrl == toState.name) {
 							$scope.setglobaldata.timedatalist[indextm].fnAutoRefresh();
@@ -200,20 +231,16 @@ angular.module('app')
 						}
 					}
 					
-					//    验证是否已登录
-					if('access.signin,access.signup,access.404'.indexOf('$state.current.name') < 0 && !opCookie.getCookie('user_info')){
-						//window.location.href = window.location.origin + window.location.pathname + '#/access/signin';
+					// 未注册 时只能打开server页
+					console.log(toState.name);
+					if(toState.name != 'app.server' && $scope.app.registerd === 0){
+						toaster.pop('warning','失败', '系统未注册');
+						$state.go('app.server');
 					}
+					
 				}
 			);
 			//  ========================= /定时器 =============================
-			
-			
-			
-			
-			
-			
-			
 			
       
       //   run

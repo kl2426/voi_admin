@@ -2,18 +2,19 @@
 
 
 /**
- * 终端管理
+ * 镜像管理
  */
-app.controller('terminalCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal', function($scope, $timeout, globalFn, httpService, $modal) {
-	console.log('终端管理')
+app.controller('mirrorCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal', function($scope, $timeout, globalFn, httpService, $modal) {
+	console.log('镜像')
 }]);
 
 
 /**
- * 终端管理 - 终端总览
+ * 镜像模板管理
  */
-app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal','toaster', function($scope, $timeout, globalFn, httpService, $modal, toaster) {
-
+app.controller('mirrorTemplateCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal','toaster', function($scope, $timeout, globalFn, httpService, $modal, toaster) {
+	console.log('镜像')
+	
 	/**
 	 * 表格1
 	 */
@@ -85,6 +86,14 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		}
 	}
 	
+	//   默认展开
+	$scope.list_open = [];
+	
+	//   展开
+	$scope.item_open = function(item){
+		item.is_open = !item.is_open;
+		$scope.list_open = angular.copy($scope.table_data.table_res.row);
+	}
 	
 	//   终端组change
 	$scope.grpChange = function(item){
@@ -96,52 +105,51 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	 * 查询列表
 	 */
 	var findFunctionList = function(form) {
-		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/showClient',form)
+		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/showTpls',{})
 			.then(function(res) {
 				console.log(res);
 				if(res.status == 200 && res.data.retCode == 0) {
 					angular.extend($scope.table_data.table_res, res.data);
-					$scope.table_data.table_res.row = res.data.clis;
-					console.log($scope.table_data)
+					$scope.table_data.table_res.row = res.data.tpls;
+					var row = $scope.table_data.table_res.row;
+					var list = $scope.list_open;
+					if(list.length == 0 && row.length > 0){
+						row[0].is_open = true;
+					}
+					for(var i in row){
+						for(var b in list){
+							if(row[i].id == list[b].id && list[b].is_open){
+								$scope.table_data.table_res.row[i].is_open = true;
+							}
+						}
+					}
 				} else {
 					$scope.table_data.table_res.row = [];
+					$scope.list_open = [];
 				}
 			});
 	}
 	
 	
-	//    取终端组
-	var getCliGrp = function() {
-		httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/getCliGrps')
-			.then(function(res) {
-				if(res.status == 200 && res.data.retCode == 0) {
-					$scope.table_data.grp_items = res.data.grps;
-				} else {
-					$scope.table_data.grp_items = [];
-				}
-			});
-	}
-	
-	//   移动到终端组
-	var chgCliGrp = function(idarr,gid){
-		if(idarr instanceof Array && idarr.length > 0 && gid){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/chgCliGrp',{'ids':idarr,'gid':gid})
+	//    删除模板
+	var delTpl = function(id) {
+		if(id){
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/delTpl',{'id':id})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					$scope.table_search();
-					toaster.pop('success','成功', '移动成功。');
+					toaster.pop('success','成功', '删除成功。');
 				} else {
-					toaster.pop('warning','失败', '移动失败。');
+					toaster.pop('warning','失败', '删除失败。');
 				}
 			});
 		}
 	}
 	
-	
-	//    删除终端
-	var cliDel = function(idarr) {
-		if(idarr instanceof Array && idarr.length > 0){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cliDel',{'ids':idarr})
+	//    删除镜像
+	var delImg = function(ids) {
+		if(ids){
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/delImg',{'ids':ids})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					$scope.table_search();
@@ -154,147 +162,83 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	}
 	
 	
-	//    解绑
-	var unbind = function(mid) {
-		if(mid){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/unbind',{'mid':mid})
-			.then(function(res) {
-				if(res.status == 200 && res.data.retCode == 0) {
-					toaster.pop('success','成功', '解绑成功');
-				} else {
-					toaster.pop('warning','失败', '解绑失败');
-				}
-			});
-		}
-	}
 	
 	
 	
-	
-	
-	//   终端操作   
-	//   action:  string 允许值: reboot, shutdown, approve, reject   重起， 关机 ，起用，禁用
-	var cliCtrl = function(idarr,action){
-		if(idarr instanceof Array && idarr.length > 0 && action){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cliCtrl',{'ids':idarr,'action':action})
-			.then(function(res) {
-				if(res.status == 200 && res.data.retCode == 0) {
-					$scope.table_search();
-					toaster.pop('success','成功', '操作成功。');
-				} else {
-					toaster.pop('warning','失败', '操作失败。');
-				}
-			});
-		}else{
-			
-		}
-	}
-	
-	
-
 	/**
-	 * 操作
+	 * 镜像操作
 	 */
-	$scope.table_operate = function(str, item) {
+	$scope.tpls_operate = function(str, item) {
 		if(str == 'add'){
-			openAdd(str,item);
+			openTplsAdd(str,item);
 		}else if(str == 'edit') {
-			openAdd('edit',item);
+			openTplsAdd('edit',item);
 		} else if(str == 'del') {
 			openDel(function(){
-				cliDel([item.id]);
+				delTpl(item.id);
 			});
-		}else if (str == 'move'){
-			openMove(str,item,function(gid){
-				chgCliGrp([item.id],gid);
-			});
-		}else if (str == 'approve'){
-			//   启用
-			openCliCtrl('启用',function(){
-				cliCtrl([item.id],'approve');
-			});
-		}else if (str == 'reject'){
-			//   停用
-			openCliCtrl('停用',function(){
-				cliCtrl([item.id],'reject');
-			});
-		}else if (str == 'reboot'){
-			//   重起
-			openCliCtrl('重起',function(){
-				cliCtrl([item.id],'reboot');
-			});
-		}else if (str == 'shutdown'){
-			//   关机
-			openCliCtrl('关机',function(){
-				cliCtrl([item.id],'shutdown');
-			});
+		}else if (str == 'copy'){
+			//   克隆
+			openCopyAdd(str,item);
 		}
 	}
-	
-	
-	/**
-	 * 批量移动到终端组
-	 * 
-	 */
-	$scope.batchMove = function(){
-		var temp_ck = $scope.table_data.checkbox.checkboxArr;
-		var temp_arr = [];
-		for(var i in temp_ck){
-			temp_arr.push(temp_ck[i].id);
-		}
-		// 
-		openMove('move',{},function(gid){
-			chgCliGrp(temp_arr,gid);
-		});
-		
-	}
-	
-	/**
-	 * 批量删除
-	 */
-	$scope.batchDel = function(){
-		var temp_ck = $scope.table_data.checkbox.checkboxArr;
-		var temp_arr = [];
-		for(var i in temp_ck){
-			temp_arr.push(temp_ck[i].id);
-		}
-		// 
-		openDel(function(){
-			cliDel(temp_arr);
-		});
-	}
-	
-	
-	/**
-	 * 批量操作
-	 * str 操作标识字符串，
-	 * name 操作名称
-	 */
-	$scope.batchCliCtrl = function(str,name){
-		var temp_ck = $scope.table_data.checkbox.checkboxArr;
-		var temp_arr = [];
-		for(var i in temp_ck){
-			temp_arr.push(temp_ck[i].id);
-		}
-		//
-		openCliCtrl(name,function(){
-			cliCtrl(temp_arr,str);
-		});
-	}
-	
-	
-	
-	
 	
 
+	/**
+	 * 镜像操作
+	 */
+	$scope.imgs_operate = function(str, item, item2) {
+		if(str == 'edit'){
+			openCopyAdd(str, item);
+		}else if(str == 'del') {
+			openDel(function(){
+				delImg([item.id]);
+			});
+		}else if(str == 'new') {
+			//   应用为模板
+			openTplsAdd(str, item, item2);
+		}
+	}
+	
+	
 	/**
 	 * 打开添加修改
 	 */
-	var openAdd = function(str, item) {
+	var openTplsAdd = function(str, item, item2) {
 		var modalInstance = $modal.open({
-			templateUrl: 'tpl/terminal/list/modal_add.html',
-			controller: 'modalTerminalListAddCtrl',
+			templateUrl: 'tpl/mirror/template/modal_add.html',
+			controller: 'modalMirrorTemplateAddCtrl',
 			//size: size,
+			resolve: {
+				items: function() {
+					return {
+						'operate': str,
+						'item': item,
+						'item2':item2
+					};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				$scope.table_search();
+			}
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	
+	/**
+	 * 打开镜像克隆
+	 */
+	var openCopyAdd = function(str, item) {
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/mirror/template/modal_copy.html',
+			controller: 'modalMirrorTemplateCopyCtrl',
+			size: (str == 'copy') ? 'lg' : '',
 			resolve: {
 				items: function() {
 					return {
@@ -313,92 +257,6 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 			//console.log('Modal dismissed at: ' + new Date());
 		});
 	}
-	
-	
-	/**
-	 * 打开移动到终端组
-	 */
-	var openMove = function(str,item,cb) {
-		var modalInstance = $modal.open({
-			templateUrl: 'tpl/terminal/list/modal_move.html',
-			controller: 'modalTerminalListMoveCtrl',
-			//size: size,
-			resolve: {
-				items: function() {
-					return {
-						'operate': str,
-						'item': item,
-					};
-				}
-			}
-		});
-
-		modalInstance.result.then(function(gid) {
-			if(gid){
-				typeof cb == "function" && cb(gid);
-			}
-		}, function() {
-			//console.log('Modal dismissed at: ' + new Date());
-		});
-	}
-	
-	
-	
-	/**
-	 * 终端绑定用户
-	 */
-	$scope.openUser = function(str,item) {
-		var modalInstance = $modal.open({
-			templateUrl: 'tpl/terminal/list/modal_user.html',
-			controller: 'modalTerminalListUserCtrl',
-			//size: size,
-			resolve: {
-				items: function() {
-					return {
-						'operate': str,
-						'item': item,
-					};
-				}
-			}
-		});
-
-		modalInstance.result.then(function(bol) {
-			if(bol) {
-				toaster.pop('success','成功', '绑定成功');
-			} else {
-				toaster.pop('warning','失败', '绑定失败');
-			}
-		}, function() {
-			//console.log('Modal dismissed at: ' + new Date());
-		});
-	}
-	
-	
-	/**
-	 * 解绑
-	 */
-	var openUnbind = function(item) {
-		var modalInstance = $modal.open({
-			templateUrl: 'tpl/modal/server/modal_alert.html',
-			controller: 'modalAlertCtrl',
-			windowClass: 'm-modal-alert',
-			size: 'sm',
-			resolve: {
-				items: function() {
-					return {'title':'确定要解绑吗？'};
-				}
-			}
-		});
-
-		modalInstance.result.then(function(bol) {
-			if(bol){
-				unbind(item.id);
-			}
-		}, function() {
-			//console.log('Modal dismissed at: ' + new Date());
-		});
-	}
-	
 	
 	
 	/**
@@ -426,30 +284,7 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		});
 	}
 	
-	/**
-	 * 打开批量操作弹窗
-	 */
-	var openCliCtrl = function(str,cb) {
-		var modalInstance = $modal.open({
-			templateUrl: 'tpl/modal/server/modal_alert.html',
-			controller: 'modalAlertCtrl',
-			windowClass: 'm-modal-alert',
-			size: 'sm',
-			resolve: {
-				items: function() {
-					return {'title':'确定要' + str + '吗？'};
-				}
-			}
-		});
-
-		modalInstance.result.then(function(bol) {
-			if(bol){
-				typeof cb == "function" && cb(bol);
-			}
-		}, function() {
-			//console.log('Modal dismissed at: ' + new Date());
-		});
-	}
+	
 	
 	
 	
@@ -474,20 +309,29 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		//$scope.getMenu();
 		
 		$scope.table_search();
-		//  取终端组
-		getCliGrp();
 	}
 	run();
-
+	
 }]);
 
 
 
 
 /**
- * 终端管理 - 终端组总览
+ * 镜像模板管理
  */
-app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal','toaster', function($scope, $timeout, globalFn, httpService, $modal, toaster) {
+app.controller('mirrorDeployCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal', function($scope, $timeout, globalFn, httpService, $modal) {
+	console.log('镜像')
+}]);
+
+
+
+
+
+/**
+ * 镜像管理 - 镜像总览
+ */
+app.controller('mirrorListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal','toaster', function($scope, $timeout, globalFn, httpService, $modal, toaster) {
 
 	/**
 	 * 表格1
@@ -500,9 +344,6 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 			key: "",
 			page: 1,
 			pageSize: 10,
-			gid: null,
-			//sortname: "a.FUCECREATETIME",
-			//sortorder: "desc"
 		},
 		//   表格数据
 		table_res: {
@@ -561,23 +402,18 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	}
 	
 	
-	//   终端组change
-	$scope.grpChange = function(item){
-		$scope.table_data.form.gid = item.id;
-	}
 	
 	
 	/**
 	 * 查询列表
 	 */
 	var findFunctionList = function(form) {
-		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/showCliGrp',form)
+		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/showImgs',form)
 			.then(function(res) {
 				console.log(res);
 				if(res.status == 200 && res.data.retCode == 0) {
 					angular.extend($scope.table_data.table_res, res.data);
-					$scope.table_data.table_res.row = res.data.grps;
-					console.log($scope.table_data)
+					$scope.table_data.table_res.row = res.data.imgs;
 				} else {
 					$scope.table_data.table_res.row = [];
 				}
@@ -586,10 +422,10 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	
 	
 	
-	//    删除终端
-	var delCliGrp = function(idarr) {
+	//    删除
+	var delImg = function(idarr) {
 		if(idarr instanceof Array && idarr.length > 0){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/delCliGrp',{'ids':idarr})
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/delImg',{'ids':idarr})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					$scope.table_search();
@@ -629,23 +465,16 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	 * 操作
 	 */
 	$scope.table_operate = function(str, item) {
-		if(str == 'add'){
-			openAdd(str,item);
-		}else if(str == 'edit') {
-			openAdd('edit',item);
+		if(str == 'edit') {
+			openCopyAdd('edit',item);
 		} else if(str == 'del') {
 			openDel(function(){
-				delCliGrp([item.id]);
+				delImg([item.id]);
 			});
 		}else if (str == 'reboot'){
-			//   重起
+			//   还原
 			openCliCtrl('重起',function(){
 				cgCtl([item.id],'reboot');
-			});
-		}else if (str == 'shutdown'){
-			//   关机
-			openCliCtrl('关机',function(){
-				cgCtl([item.id],'shutdown');
 			});
 		}
 	}
@@ -663,27 +492,11 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		}
 		// 
 		openDel(function(){
-			delCliGrp(temp_arr);
+			delImg(temp_arr);
 		});
 	}
 	
 	
-	/**
-	 * 批量操作
-	 * str 操作标识字符串，
-	 * name 操作名称
-	 */
-	$scope.batchCliCtrl = function(str,name){
-		var temp_ck = $scope.table_data.checkbox.checkboxArr;
-		var temp_arr = [];
-		for(var i in temp_ck){
-			temp_arr.push(temp_ck[i].id);
-		}
-		//
-		openCliCtrl(name,function(){
-			cgCtl(temp_arr,str);
-		});
-	}
 	
 	
 	
@@ -691,13 +504,13 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	
 
 	/**
-	 * 打开添加修改
+	 * 打开镜像克隆
 	 */
-	var openAdd = function(str, item) {
+	var openCopyAdd = function(str, item) {
 		var modalInstance = $modal.open({
-			templateUrl: 'tpl/terminal/type/modal_add.html',
-			controller: 'modalTerminalTypeAddCtrl',
-			//size: size,
+			templateUrl: 'tpl/mirror/template/modal_copy.html',
+			controller: 'modalMirrorTemplateCopyCtrl',
+			size: (str == 'copy') ? 'lg' : '',
 			resolve: {
 				items: function() {
 					return {

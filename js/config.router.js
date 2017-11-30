@@ -64,9 +64,9 @@ angular.module('app')
                   resolve: {
                       deps: ['$ocLazyLoad',
                         function( $ocLazyLoad ){
-                          return $ocLazyLoad.load(['ui.select']).then(
+                          return $ocLazyLoad.load(['ui.select','toaster']).then(
                               function(){
-                                 return $ocLazyLoad.load(['js/controllers/user/user.js','js/controllers/modal/user.js']);
+                                 return $ocLazyLoad.load(['js/controllers/user/user.js','js/controllers/modal/user.js','js/controllers/modal/server.js']);
                               }
                           );
                         }
@@ -97,9 +97,9 @@ angular.module('app')
                   resolve: {
                       deps: ['$ocLazyLoad',
                         function( $ocLazyLoad ){
-                          return $ocLazyLoad.load(['ui.select']).then(
+                          return $ocLazyLoad.load(['ui.select','toaster']).then(
                               function(){
-                                 return $ocLazyLoad.load(['js/controllers/terminal/terminal.js']);
+                                 return $ocLazyLoad.load(['js/controllers/terminal/terminal.js','js/controllers/modal/terminal.js','js/controllers/modal/server.js']);
                               }
                           );
                         }
@@ -127,25 +127,39 @@ angular.module('app')
                */
               .state('app.mirror', {
                   url: '/mirror',
-                  templateUrl: 'tpl/mirror/index.html'
+                  templateUrl: 'tpl/mirror/index.html',
+                  resolve: {
+                      deps: ['$ocLazyLoad',
+                        function( $ocLazyLoad ){
+                          return $ocLazyLoad.load(['ui.select','toaster']).then(
+                              function(){
+                                 return $ocLazyLoad.load(['js/controllers/mirror/mirror.js','js/controllers/modal/server.js','js/controllers/modal/mirror.js']);
+                              }
+                          );
+                        }
+                      ]
+                  }
               })
               
               //  镜像模板管理
               .state('app.mirror.template', {
                   url: '/template',
-                  templateUrl: 'tpl/mirror/template/index.html'
+                  templateUrl: 'tpl/mirror/template/index.html',
+                  controller: 'mirrorTemplateCtrl'
               })
               
               //  镜像总览
               .state('app.mirror.list', {
                   url: '/list',
-                  templateUrl: 'tpl/mirror/list/index.html'
+                  templateUrl: 'tpl/mirror/list/index.html',
+                  controller: 'mirrorListCtrl'
               })
               
                //  部署镜像
               .state('app.mirror.deploy', {
                   url: '/deploy',
-                  templateUrl: 'tpl/mirror/deploy/index.html'
+                  templateUrl: 'tpl/mirror/deploy/index.html',
+                  controller: 'mirrorDeployCtrl'
               })
               
               

@@ -6,28 +6,14 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	 * 表格1
 	 */
 	$scope.table_data = {
-		//   用户组
-		user_items: [{
-				title: '全部',
-				val: ""
-			},
-			{
-				title: '是',
-				val: 1
-			},
-			{
-				title: '不是',
-				val: 0
-			},
-		],
-		user_item: {
-			title: '全部',
-			val: ""
-		},
+		//   终端组
+		grp_items: [{id:'',name:'选择终端组'}],
+		grp_item: "",
 		form: {
 			key: "",
 			page: 1,
 			pageSize: 10,
+			gid: null,
 			//sortname: "a.FUCECREATETIME",
 			//sortorder: "desc"
 		},
@@ -36,7 +22,7 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			retCode: 0,
 			//message: "ok",
 			row: [],
-			total: 2,
+			total: 1,
 			//
 			maxSize: 5
 		},
@@ -48,7 +34,87 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		//   每页显示多少条
 		selectChanged: function() {
 			findFunctionList($scope.table_data.form);
+		},
+		checkbox: {
+			//   是否全选
+			'allCheckbox':false,
+			//   选中
+			'checkboxArr':[],
+			//   点击单选
+			checkboxClick:function(item){
+				var temp_row = $scope.table_data.table_res.row;
+				$scope.table_data.checkbox.checkboxArr = [];
+				//  是否全选 true全选
+				var temp_bol = true;
+				for(var i in temp_row){
+					if(temp_row[i].checked === true){
+						$scope.table_data.checkbox.checkboxArr.push(temp_row[i]);
+					}else{
+						temp_bol = false;
+					}
+				}
+				$scope.table_data.checkbox.allCheckbox = temp_bol;
+			},
+			//   全选
+			checkboxAll:function(){
+				var temp_row = $scope.table_data.table_res.row;
+				$scope.table_data.checkbox.checkboxArr = [];
+				for(var i in temp_row){
+					if($scope.table_data.checkbox.allCheckbox){
+						//   全选
+						$scope.table_data.table_res.row[i].checked = true;
+						$scope.table_data.checkbox.checkboxArr.push(temp_row[i]);
+					}else{
+						//   全不选
+						$scope.table_data.table_res.row[i].checked = false;
+					}
+				}
+			}
 		}
+	}
+	
+	//   系统概况
+	$scope.sys = {
+		//  ip
+		'ip':'',
+		'mask':'',
+		//   模板数
+		'tpls':0,
+		//   镜像数
+		'imgs':0,
+		//   用户组数
+		'userGrps':0,
+		//   用户数
+		'users':0,
+		//////////////////////
+		//  镜像
+		'img_obj':{
+			//   镜像百分比 
+			'used':0,
+			//   总量
+			'diskSpace':0
+		},
+		///////////////////////
+		//   授权终端数量
+		'clilimit':0,
+		//   终端组数量
+		'cliGrpNum':0,
+		//   终端总数
+		'pageSum':0,
+		//   在线终端数
+		'onlines':0,
+		//   离线终端数
+		'offlines':0,
+	}
+	
+	//   终端组 与镜像
+	$scope.grps = [];
+	
+	
+	//   终端组过滤
+	$scope.grpChange = function(item){
+		$scope.table_data.form.gid = item.id;
+		$scope.table_search();
 	}
 	
 	
@@ -61,14 +127,144 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 				console.log(res);
 				if(res.status == 200 && res.data.retCode == 0) {
 					angular.extend($scope.table_data.table_res, res.data);
-					$scope.table_data.table_res.row = res.data.users;
-					console.log($scope.table_data)
+					$scope.table_data.table_res.row = res.data.clients;
+					$scope.table_data.table_res.total = res.data.pageSum;
+					//
+					$scope.table_data.grp_items = res.data.cliGroups;
+					
 				} else {
 					$scope.table_data.table_res.row = [];
 				}
 			});
 	}
+	
+	
+	/**
+	 * 查询系统状态
+	 */
+	var sysStatus = function() {
+		httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/sysStatus')
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					$scope.sys.tpls = res.data.tpls ? res.data.tpls : 0;
+					$scope.sys.imgs = res.data.imgs ? res.data.imgs : 0;
+					$scope.sys.userGrps = res.data.userGrps ? res.data.userGrps : 0;
+					$scope.sys.ip = res.data.ip ? res.data.ip : "";
+					$scope.sys.mask = res.data.mask ? res.data.mask : "";
+					//   部署模式
+					$scope.app.deployOn = res.data.deployOn ? res.data.deployOn : 0;
+					//  镜像
+					$scope.sys.img_obj.used = res.data.used ? res.data.used : 0;
+					$scope.sys.img_obj.diskSpace = res.data.diskSpace ? res.data.diskSpace : 0;
+					//   画圈
+					var temp_echarts_o = angular.copy($scope.echarts_option1);
+					temp_echarts_o.series[0].data[0].value = parseInt($scope.sys.img_obj.used / 100 * $scope.sys.img_obj.diskSpace);
+					temp_echarts_o.series[0].data[1].value = $scope.sys.img_obj.diskSpace;
+					$scope.echarts_option1 = temp_echarts_o;
+				} else {
+					// $scope.table_data.grp_items = [];
+				}
+			});
+	}
+	
+	
+	/**
+	 * 查询终端状态
+	 */
+	var cliStatus = function() {
+		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cliStatus',{
+			'mid':0
+		})
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					$scope.sys.clilimit = res.data.clilimit ? res.data.clilimit : 0;
+					$scope.sys.cliGrpNum = res.data.cliGrpNum ? res.data.cliGrpNum : 0;
+					$scope.sys.pageSum = res.data.pageSum ? res.data.pageSum : 0;
+					$scope.sys.onlines = res.data.onlines ? res.data.onlines : 0;
+					$scope.sys.offlines = $scope.sys.pageSum - $scope.sys.onlines;
+				} else {
+					// $scope.table_data.grp_items = [];
+				}
+			});
+	}
+	
+	
 
+	/**
+	 * 查询终端组
+	 */
+	var getCliGrps = function() {
+		httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/getCliGrps')
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					//$scope.table_data.grp_items = $scope.table_data.grp_items.concat(res.data.grps);
+					//
+					$scope.grps = res.data.grps;
+					//   取终端组镜像
+					for(var i in $scope.grps){
+						getCliGrp($scope.grps[i].id, i);
+					}
+				} else {
+					//$scope.table_data.grp_items = [];
+					$scope.grps = [];
+				}
+			});
+	}
+	
+	
+	/**
+	 * 查询终端组详情
+	 */
+	var getCliGrp = function(id, index) {
+		httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/getCliGrp',{'id':id})
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					$scope.grps[index].imgs = res.data.imgs;
+					for(var i in res.data.imgs){
+						if(res.data.imgs[i].id == res.data.defOs){
+							$scope.grps[index].imgs[i].seleced = 1;
+						}
+					}
+					console.log('grps',$scope.grps)
+				} else {
+					$scope.grps[index].imgs = [];
+				}
+			});
+	}
+	
+	
+	//   终端操作   
+	//   action:  string 允许值: reboot, shutdown,   重起， 关机
+	var cgCtl = function(idarr,action){
+		if(idarr instanceof Array && idarr.length > 0 && action){
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cgCtl',{'ids':idarr,'action':action})
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					toaster.pop('success','成功', '操作成功。');
+				} else {
+					toaster.pop('warning','失败', '操作失败。');
+				}
+			});
+		}else{
+			
+		}
+	}
+	
+	//   client - 设置自启动镜像
+	var autobootImg = function(gid,osid){
+		if(gid && osid){
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/autobootImg',{'gid':gid,'osid':osid})
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					toaster.pop('success','成功', '设置成功');
+				} else {
+					toaster.pop('warning','失败', '设置失败');
+				}
+			});
+		}else{
+			
+		}
+	}
 	
 	
 
@@ -76,8 +272,6 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	 * 打开未注册弹窗
 	 */
 	$scope.openModalNO = function() {
-		
-		
     
     
 		var modalInstance = $modal.open({
@@ -91,9 +285,14 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			}
 		});
 
-		modalInstance.result.then(function(selectedItem) {
-			console.log(selectedItem)
-        	toaster.pop('success','注册完成', '成功注册系统');
+		modalInstance.result.then(function(bol) {
+			$scope.app.registerd = 1;
+			if(bol){
+				toaster.pop('success','成功', '注册完成');
+				$scope.app.registerd = 1;
+			}else{
+				toaster.pop('warning','失败', '注册失败');
+			}
 			//$scope.selected = selectedItem;
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
@@ -106,8 +305,6 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	 * 打开部署模式  -  弹窗
 	 */
 	$scope.openModalAdminPwd = function() {
-		
-    
     
 		var modalInstance = $modal.open({
 			templateUrl: 'tpl/modal/server/modal_admin_pwd.html',
@@ -120,14 +317,55 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			}
 		});
 
-		modalInstance.result.then(function(selectedItem) {
-			console.log(selectedItem)
-        	toaster.pop('success','成功', '已进入部署模式');
-			//$scope.selected = selectedItem;
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				$scope.app.deployOn = 1;
+				toaster.pop('success','成功', '已进入部署模式');
+			}else{
+				$scope.app.deployOn = 0;
+				toaster.pop('warning', '失败', '进入失败');
+			}
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
 		});
 	}
+	
+	
+	/**
+	 * 退出部署模式 -  弹窗
+	 */
+	$scope.openModalAdminPwdExit = function() {
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/modal/server/modal_alert.html',
+			controller: 'modalAlertCtrl',
+			windowClass: 'm-modal-alert',
+			size: 'sm',
+			resolve: {
+				items: function() {
+					return {'title':'确定要退出吗？'};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/stopDeploy')
+				.then(function(res) {
+					if(res.status == 200 && res.data.retCode == 0) {
+						$scope.app.deployOn = 0;
+						toaster.pop('success','成功', '退出成功。');
+					} else {
+						$scope.app.deployOn = 1;
+						toaster.pop('warning', '失败', '退出失败');
+					}
+				});
+			}
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
 	
 	
 	/**
@@ -147,10 +385,17 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			}
 		});
 
-		modalInstance.result.then(function(selectedItem) {
-			console.log(selectedItem)
-        	toaster.pop('success','成功', '服务器已重起。');
-			//$scope.selected = selectedItem;
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/serReboot')
+				.then(function(res) {
+					if(res.status == 200 && res.data.retCode == 0) {
+						toaster.pop('success', '成功', '服务器重启成功');
+					} else {
+						toaster.pop('warning', '失败', '服务器重启失败');
+					}
+				});
+			}
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
 		});
@@ -174,10 +419,15 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			}
 		});
 
-		modalInstance.result.then(function(selectedItem) {
-			console.log(selectedItem)
-        	toaster.pop('success','成功', '服务器已关机。');
-			//$scope.selected = selectedItem;
+		modalInstance.result.then(function(bol) {
+			httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/serShutdown')
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					toaster.pop('success', '成功', '服务器关机成功');
+				} else {
+					toaster.pop('warning', '失败', '服务器关机失败');
+				}
+			});
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
 		});
@@ -199,100 +449,92 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			}
 		});
 
-		modalInstance.result.then(function(selectedItem) {
-			console.log(selectedItem)
-        	toaster.pop('success','成功', '服务器已关机。');
-			//$scope.selected = selectedItem;
-		}, function() {
-			//console.log('Modal dismissed at: ' + new Date());
-		});
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	/**
-	 * 打开添加修改
-	 */
-	var openRole = function(str, item, select_item) {
-		var modalInstance = $modal.open({
-			templateUrl: 'tpl/xtgl/yhgl/cdgl/modal_role.html',
-			controller: 'modalRoleXtglYhglCdglCtrl',
-			//size: size,
-			resolve: {
-				items: function() {
-					return {
-						'operate': str,
-						'item': item,
-						'select_item': select_item
-					};
-				},
-				deps: ['uiLoad',
-					function(uiLoad) {
-						return uiLoad.load(['vendor/jquery/ztree/css/zTreeStyle.css', 'vendor/jquery/ztree/js/jquery.ztree.core.js', 'vendor/jquery/ztree/js/jquery.ztree.excheck.js', 'js/directives/ztree.js']);
-					}
-				]
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				//toaster.pop('success','成功', '服务器已关机。');
+			}else{
+				
 			}
-		});
-
-		modalInstance.result.then(function(selectedItem) {
-			//$scope.selected = selectedItem;
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
 		});
 	}
-
+	
+	
 	/**
-	 * 打开子权限弹窗
+	 * 打开终端组管理 重起，关机 -  弹窗
 	 */
-	var openSon = function(item) {
+	$scope.openModalCgCtl = function(str,item,str2) {
+		var temp_name = '';
+		if(str == 'reboot'){
+			//   
+			temp_name = '确定要重起吗？';
+		}else if(str == 'shutdown'){
+			temp_name = '确定要关机吗？';
+		}
+    
 		var modalInstance = $modal.open({
-			templateUrl: 'tpl/xtgl/yhgl/cdgl/modal.html',
-			controller: 'modalXtglYhglCdglCtrl',
-			//size: size,
+			templateUrl: 'tpl/modal/server/modal_alert.html',
+			controller: 'modalAlertCtrl',
+			windowClass: 'm-modal-alert',
+			size: 'sm',
 			resolve: {
 				items: function() {
-					return item;
+					return {'title':temp_name};
 				}
 			}
 		});
 
-		modalInstance.result.then(function(selectedItem) {
-			//$scope.selected = selectedItem;
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				if(str2 == 'all'){
+					//   所有
+					var temp_arr = [];
+					for(var i in $scope.grps){
+						temp_arr.push($scope.grps[i].id);
+					}
+					cgCtl(temp_arr, str);
+				}else{
+					//   单个
+					cgCtl([item.id], str);
+				}
+			}
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
 		});
 	}
+	
+	
+	
+	/**
+	 * 终端组设置自动起动镜像 -  弹窗
+	 */
+	$scope.openModalAutoImg = function(gid,osid) {
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/modal/server/modal_alert.html',
+			controller: 'modalAlertCtrl',
+			windowClass: 'm-modal-alert',
+			size: 'sm',
+			resolve: {
+				items: function() {
+					return {'title':'确定设置为自动起动镜像？'};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				autobootImg(gid,osid);
+			}
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	
+
 
 	/**
 	 * 搜索
@@ -301,6 +543,9 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		//
 		findFunctionList($scope.table_data.form);
 	}
+	
+	
+	// 、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、
 
 	$scope.echarts_option1 = {
 	    series: [
@@ -329,7 +574,7 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	                }
 	            },
 	            data:[
-	                {value:30, itemStyle:{normal:{color:'#feb609'}}},
+	                {value:0, itemStyle:{normal:{color:'#feb609'}}},
 	                {value:70, itemStyle:{normal:{color:'#fdf3e5'}}}
 	            ]
 	        }
@@ -410,6 +655,13 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		//$scope.getMenu();
 		
 		$scope.table_search();
+		//   查询终端组
+		getCliGrps();
+		
+		//   取服务状态
+		sysStatus();
+		//   取终端状态
+		cliStatus();
 	}
 	run();
 
