@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window','opCookie','httpService','globalFn','$rootScope','$state','toaster','$modal',
-    function(              $scope,   $translate,   $localStorage,   $window,opCookie,httpService, globalFn ,$rootScope,$state,toaster,$modal) {
+  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window','opCookie','httpService','globalFn','$rootScope','$state','toaster','$modal','$location',
+    function(              $scope,   $translate,   $localStorage,   $window,opCookie,httpService, globalFn ,$rootScope,$state,toaster,$modal,$location) {
       // add 'ie' classes to html
       var isIE = !!navigator.userAgent.match(/MSIE/i);
       isIE && angular.element($window.document.body).addClass('ie');
@@ -12,8 +12,8 @@ angular.module('app')
 
       // config
       $scope.app = {
-        name: 'VOI云桌面管理系统',
-        version: 'v2.2.3',
+        name: '透明计算管理系统',
+        version: 'X 1.0.0',
         // for chart colors
         color: {
           primary: '#7266ba',
@@ -41,7 +41,7 @@ angular.module('app')
         //   userInfo  用户登录数据
         user_info:{},
         //   系统是否注册 0 未注册   1  已注册 
-        registerd:1,
+        registerd:0,
         //   是否进入部署模式  0  1已进入
         deployOn:0
       }
@@ -170,6 +170,42 @@ angular.module('app')
       
       
       
+      /**
+			 * 查询系统状态
+			 */
+			var sysStatus = function(cb) {
+				httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/sysStatus')
+					.then(function(res) {
+						if(res.status == 200 && res.data.retCode == 0) {
+							//   系统是否注册
+							$scope.app.registerd = res.data.registerd;
+							//   部署模式
+							$scope.app.deployOn = res.data.deployOn ? res.data.deployOn : 0;
+							typeof cb == "function" && cb(res.data);
+						} else {
+							// $scope.table_data.grp_items = [];
+						}
+					});
+			}
+      
+      
+      /**
+       * alerts
+       */
+      $scope.alerts = [
+	//	      { type: 'success', msg: 'Well done! You successfully read this important alert message.' },
+	//	      {type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.'},
+	//	      { type: 'info', msg: 'Heads up! This alert needs your attention, but it is not super important.' },
+	//	      { type: 'warning', msg: 'Warning! Best check yo self, you are not looking too good...' }
+	    ];
+	    $scope.addAlert = function(type,msg) {
+	      $scope.alerts.push({type: type ? type : 'danger', msg: msg ? msg : ''});
+	    };
+	
+	    $scope.closeAlert = function(index) {
+	      $scope.alerts.splice(index, 1);
+	    };
+      
       
       //  ========================= 定时器 =============================
 			$scope.setglobaldata = {
@@ -233,14 +269,28 @@ angular.module('app')
 					
 					// 未注册 时只能打开server页
 					console.log(toState.name);
-					if(toState.name != 'app.server' && $scope.app.registerd === 0){
-						toaster.pop('warning','失败', '系统未注册');
-						$state.go('app.server');
-					}
+					//   取系统状态
+					sysStatus(function(data){
+						//
+					});
+					
 					
 				}
 			);
 			//  ========================= /定时器 =============================
+			
+			
+			
+			/**
+			 * 路由拦截
+			 */
+			$rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
+				if(toState.name.includes('app.') && $scope.app.registerd == 0 && toState.name != 'app.server'){
+					//event.preventDefault();// 取消默认跳转行为
+					//$state.go('app.server',{},{reload:true});
+				}
+			});
+			
 			
       
       //   run
@@ -256,6 +306,9 @@ angular.module('app')
 				}else{
 					$scope.app.user_info = {};
 				}
+				
+				//   系统状态
+				// sysStatus();
       }
       run();
       

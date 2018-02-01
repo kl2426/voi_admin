@@ -6,18 +6,19 @@
 </div>
 <div class="modal-body g-modal-body m-modal-serverno">
 	<div class="body-body">
-		<div class="modal-body-title">移动到用户组</div>
+		<div class="modal-body-title">选择镜像还原点</div>
 		<div class="body-main">
 			<form class="">
 				<div class="m-modal-form row">
 					<div class="col-xs-12">
 						<div class="form-group">
-							<label class="group-left control-label">用户组：</label>
+							<label class="group-left control-label">还原点：</label>
 							<div class="group-body">
-								<ui-select ng-model="groups.item" ng-change="groupsChange(groups.item)" theme="bootstrap">
-									<ui-select-match placeholder="选择用户组">{{$select.selected.name}}</ui-select-match>
-									<ui-select-choices group-by="'group'" repeat="item in groups.items | filter: $select.search">
-										<span ng-bind-html="item.name | highlight: $select.search"></span>
+								<ui-select ng-model="restore.item" ng-change="restoreChange(restore.item)" theme="bootstrap">
+									<ui-select-match placeholder="选择还原点">{{$select.selected.desc}}</ui-select-match>
+									<ui-select-choices group-by="'group'" repeat="item in restore.items | filter: $select.search">
+										<span ng-bind-html="item.desc | highlight: $select.search"></span>
+										<span ng-bind-html="item.time"></span>
 									</ui-select-choices>
 								</ui-select>
 							</div>

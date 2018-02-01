@@ -43,7 +43,7 @@
 										<th>模板名称</th>
 										<th>个性化</th>
 										<th>授权终端组</th>
-										<th>创建时间</th>
+										<!--<th>创建时间</th>-->
 										<th>操作</th>
 									</tr>
 								</thead>
@@ -63,11 +63,11 @@
 											<span ng-if="item.isPersonal == 0" class="label bg-danger" style="margin-right: 3px;">否</span>-->
 										</td>
 										<td>{{item.cliGrp}}</td>
-										<td>--</td>
+										<!--<td>--</td>-->
 										<td class="m-operate">
 											<div class="btn-group" dropdown=""><button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button><button type="button" class="btn btn-xs btn-info dropdown-toggle" dropdown-toggle="" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span>  <span class="sr-only">修改</span></button>
 												<ul class="dropdown-menu" role="menu">
-													<li>
+													<li ng-if="item.isPersonal != 1">
 														<a ng-click="table_operate('reboot',item)">还原</a>
 													</li>
 													<li>

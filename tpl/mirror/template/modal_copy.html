@@ -15,7 +15,7 @@
 							<div class="form-group">
 								<label class="group-left control-label">镜像名称：</label>
 								<div class="group-body">
-									<input type="text" ng-model="form.imgName" class="form-control" placeholder="输入镜像名称" />
+									<input type="text" ng-model="form.imgName" class="form-control" maxlength="16" placeholder="输入镜像名称" />
 								</div>
 							</div>
 						</div>
@@ -36,7 +36,7 @@
 							<div class="form-group">
 								<label class="group-left control-label">个性化：</label>
 								<div class="group-body">
-									<ui-select ng-model="form.isPersonal_item" ng-change="isPersonalChange(form.isPersonal_items)" theme="bootstrap" ng-disabled="items.operate == 'edit'">
+									<ui-select ng-model="form.isPersonal_item" ng-change="isPersonalChange(form.isPersonal_item)" theme="bootstrap" ng-disabled="items.operate == 'edit'">
 										<ui-select-match placeholder="选择个性化">{{$select.selected.name}}</ui-select-match>
 										<ui-select-choices group-by="'group'" repeat="item in form.isPersonal_items | filter: $select.search">
 											<span ng-bind-html="item.name | highlight: $select.search"></span>
@@ -116,5 +116,5 @@
 
 <div class="modal-footer g-modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>确定</button>
 </div>

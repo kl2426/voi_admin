@@ -88,6 +88,7 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 	
 	//   用户组change
 	$scope.userChange = function(item){
+		$scope.table_data.form.gid = item.id;
 		// = item;
 	}
 	
@@ -116,8 +117,10 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					$scope.table_data.user_items = res.data.groups;
+					//   加入空
+					$scope.table_data.user_items.splice(0,0,{'id':'','name':'选择用户组'});
 				} else {
-					$scope.table_data.user_items = [];
+					$scope.table_data.user_items = [{'id':'','name':'选择用户组'}];
 				}
 			});
 	}
@@ -155,7 +158,7 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 	//   重置密码
 	var resetPwd = function(idarr){
 		if(idarr instanceof Array && idarr.length > 0){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/reset',{'ids':idarr})
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/userRest',{'ids':idarr})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					$scope.table_search();
@@ -167,6 +170,22 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 		}else{
 			
 		}
+	}
+	
+	
+	/**
+	 * 导出
+	 */
+	$scope.outfile = function(){
+		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/exportUser',{})
+		.then(function(res) {
+			if(res.status == 200 && res.data.retCode == 0 && res.data.msg && res.data.msg.length > 0) {
+				window.open(httpService.API.origin + res.data.msg);
+				toaster.pop('success','成功', '导出成功。');
+			} else {
+				toaster.pop('warning','失败', '导出失败。');
+			}
+		});
 	}
 	
 	
@@ -205,6 +224,11 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
 		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
+		}
 		// 
 		openDel(function(){
 			delUser(temp_arr);
@@ -219,6 +243,11 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 		var temp_arr = [];
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
+		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
 		}
 		//
 		openResetPwd(function(){
@@ -236,6 +265,11 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 		var temp_arr = [];
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
+		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
 		}
 		// 
 		openMove('move',{},function(gid){
@@ -259,6 +293,7 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 					return {
 						'operate': str,
 						'item': item,
+						'alert':$scope.addAlert
 					};
 				}
 			}
@@ -287,6 +322,7 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 					return {
 						'operate': str,
 						'item': item,
+						'alert':$scope.addAlert
 					};
 				}
 			}
@@ -523,6 +559,11 @@ app.controller('userTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
 		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
+		}
 		// 
 		openDel(function(){
 			delUserGroup(temp_arr);
@@ -544,6 +585,7 @@ app.controller('userTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 					return {
 						'operate': str,
 						'item': item,
+						'alert': $scope.addAlert
 					};
 				}
 			}

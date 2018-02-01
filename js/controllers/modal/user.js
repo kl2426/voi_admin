@@ -17,6 +17,7 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		//   用户组ID
 		gid: null,
 		//   终端组ID
+		mGid:null,
 		mGrpName: null,
 		//   组名
 		grpName: '',
@@ -45,7 +46,8 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 	//   终端组change
 	$scope.terminalsChange = function(item){
 		$scope.form.grpName = item.name;
-		$scope.form.mGrpName = item.id;
+		$scope.form.mGrpName = item.name;
+		$scope.form.mGid = item.id;
 	}
 	
 	
@@ -60,6 +62,10 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 					for(var i in $scope.groups.items){
 						if($scope.groups.items[i].id == $scope.form.gid){
 							$scope.groups.item = $scope.groups.items[i];
+						}
+						if($scope.groups.items[i].id == 1){
+							$scope.groups.items[i].disabled = true;
+							$scope.groups.items[i].isDisabled = true;
 						}
 					}
 				} else {
@@ -76,7 +82,7 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 					$scope.terminals.items = res.data.grps;
 					//  输入用户组
 					for(var i in $scope.terminals.items){
-						if($scope.terminals.items[i].id == $scope.form.mGrpName){
+						if($scope.terminals.items[i].id == $scope.form.mGid){
 							$scope.terminals.item = $scope.terminals.items[i];
 						}
 					}
@@ -86,28 +92,31 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 			});
 	}
 	
-	
-	
 	//   添加用户
 	var addUser = function(){
 		var temp_obj = {};
-		if(!$scope.form.name){
+		if(!(/^\S{3,16}$/.test($scope.form.name))){
+			$scope.items.alert('danger','用户名输入错误,必须3-16字符');
 			return false;
 		}else{
 			temp_obj.user = $scope.form.name;
 		}
 		//
-		if(!$scope.form.realName){
-			return false;
-		}else{
-			temp_obj.realName = $scope.form.realName;
-		}
-		//
 		if($scope.form.gid === null){
+			$scope.items.alert('danger','用户组必选');
 			return false;
 		}else{
 			temp_obj.gid = +$scope.form.gid;
 		}
+		// 
+		if($scope.form.gid != 1 && $scope.form.mGid === null){
+			//  return false;
+		}else{
+			temp_obj.mGid = $scope.form.mGid;
+		}
+		//
+		temp_obj.realName = $scope.form.realName;
+		//
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/addUser',temp_obj)
 		.then(function(res) {
 			if(res.status == 200 && res.data.retCode == 0) {
@@ -125,36 +134,38 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		var temp_obj = {
 			id: $scope.form.id
 		};
-		//
-		if(!$scope.form.realName){
-			return false;
+		// 
+		if(($scope.form.newpwd.length > 0 || $scope.form.pwd.length > 0) && $scope.form.id == 1){
+			//   有输入密码
+			if($scope.form.pwd.length < 1){
+				$scope.items.alert('danger','原密码不能为空');
+				return false;
+			}
+			if(!(/^\w{8,16}$/.test($scope.form.newpwd))){
+				$scope.items.alert('danger','新密码输入错误，必须8-16位');
+				return false;
+			}
+			temp_obj.pwd = $scope.form.pwd;
+			temp_obj.newPwd = $scope.form.newpwd;
 		}else{
-			temp_obj.realName = $scope.form.realName;
+			//
 		}
 		//
 		if($scope.form.gid === null){
+			$scope.items.alert('danger','用户组必选');
 			return false;
 		}else{
 			temp_obj.gid = +$scope.form.gid;
 		}
 		// 
-		if($scope.form.gid != 1 && $scope.form.mGrpName === null){
-			return false;
+		if($scope.form.gid != 1 && $scope.form.mGid === null){
+			//  return false;
 		}else{
-			temp_obj.mGid = $scope.form.mGrpName;
+			temp_obj.mGid = $scope.form.mGid;
 		}
-		// 
-		if(!$scope.form.newpwd){
-			//return false;
-		}else{
-			temp_obj.newPwd = $scope.form.newpwd;
-		}
-		// 
-		if(!$scope.form.pwd){
-			//return false;
-		}else{
-			temp_obj.pwd = $scope.form.pwd;
-		}
+		//
+		temp_obj.realName = $scope.form.realName;
+		//		
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/modifyUser',temp_obj)
 		.then(function(res) {
 			if(res.status == 200 && res.data.retCode == 0) {
@@ -218,6 +229,7 @@ app.controller('modalUserListMoveCtrl', ['$scope', 'globalFn', 'httpService','it
 		//   用户组ID
 		gid: null,
 		//   终端组ID
+		mGid:null,
 		mGrpName: null,
 		//   组名
 		grpName: '',
@@ -236,17 +248,24 @@ app.controller('modalUserListMoveCtrl', ['$scope', 'globalFn', 'httpService','it
 	//   终端组
 	$scope.terminals = {}
 	$scope.terminals.items = [];
-	$scope.terminals.item = {};
+	$scope.terminals.item = "";
 	
 	//   用户组change
 	$scope.groupsChange = function(item){
 		$scope.form.gid = item.id;
+		if(item.id != 2){
+			$scope.terminals.item = "";
+			$scope.form.grpName = "";
+			$scope.form.mGrpName = "";
+			$scope.form.mGid = "";
+		}
 	}
 	
 	//   终端组change
 	$scope.terminalsChange = function(item){
 		$scope.form.grpName = item.name;
-		$scope.form.mGrpName = item.id;
+		$scope.form.mGrpName = item.name;
+		$scope.form.mGid = item.id;
 	}
 	
 	
@@ -277,7 +296,7 @@ app.controller('modalUserListMoveCtrl', ['$scope', 'globalFn', 'httpService','it
 					$scope.terminals.items = res.data.grps;
 					//  输入用户组
 					for(var i in $scope.terminals.items){
-						if($scope.terminals.items[i].id == $scope.form.mGrpName){
+						if($scope.terminals.items[i].id == $scope.form.mGid){
 							$scope.terminals.item = $scope.terminals.items[i];
 						}
 					}
@@ -289,85 +308,6 @@ app.controller('modalUserListMoveCtrl', ['$scope', 'globalFn', 'httpService','it
 	
 	
 	
-	//   添加用户
-	var addUser = function(){
-		var temp_obj = {};
-		if(!$scope.form.name){
-			return false;
-		}else{
-			temp_obj.user = $scope.form.name;
-		}
-		//
-		if(!$scope.form.realName){
-			return false;
-		}else{
-			temp_obj.realName = $scope.form.realName;
-		}
-		//
-		if($scope.form.gid === null){
-			return false;
-		}else{
-			temp_obj.gid = +$scope.form.gid;
-		}
-		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/addUser',temp_obj)
-		.then(function(res) {
-			if(res.status == 200 && res.data.retCode == 0) {
-				//  添加成功
-				toaster.pop('success','成功', '新建用户成功');
-				$modalInstance.close(true);
-			} else {
-				toaster.pop('warning', '失败', res.data.msg);
-			}
-		});
-	}
-	
-	//   修改用户
-	var editUser = function(){
-		var temp_obj = {
-			id: $scope.form.id
-		};
-		//
-		if(!$scope.form.realName){
-			return false;
-		}else{
-			temp_obj.realName = $scope.form.realName;
-		}
-		//
-		if($scope.form.gid === null){
-			return false;
-		}else{
-			temp_obj.gid = +$scope.form.gid;
-		}
-		// 
-		if($scope.form.gid != 1 && $scope.form.mGrpName === null){
-			return false;
-		}else{
-			temp_obj.mGid = $scope.form.mGrpName;
-		}
-		// 
-		if(!$scope.form.newpwd){
-			//return false;
-		}else{
-			temp_obj.newPwd = $scope.form.newpwd;
-		}
-		// 
-		if(!$scope.form.pwd){
-			//return false;
-		}else{
-			temp_obj.pwd = $scope.form.pwd;
-		}
-		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/modifyUser',temp_obj)
-		.then(function(res) {
-			if(res.status == 200 && res.data.retCode == 0) {
-				//  添加成功
-				toaster.pop('success','成功', '修改用户成功');
-				$modalInstance.close(true);
-			} else {
-				toaster.pop('warning', '失败', res.data.msg);
-			}
-		});
-	}
-	
 	
 	
 	
@@ -378,14 +318,11 @@ app.controller('modalUserListMoveCtrl', ['$scope', 'globalFn', 'httpService','it
 	};
 	
 	$scope.ok = function(){
-//		switch($scope.items.operate){
-//			case 'add':
-//				addUser();
-//			break;
-//			case 'edit':
-//				editUser();
-//			break;
-//		}
+		//
+		if($scope.form.gid === null){
+			$scope.items.alert('danger','用户组必选');
+			return false;
+		}
 		
 		$modalInstance.close($scope.form.gid);
 
@@ -489,13 +426,16 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 	//   添加用户组
 	var addUserType = function(){
 		var temp_obj = {};
-		if(!$scope.form.name){
+		//		
+		if(!(/^\S{3,16}$/.test($scope.form.name))){
+			$scope.items.alert('danger','用户组名输入错误,必须3-16字符');
 			return false;
 		}else{
 			temp_obj.group = $scope.form.name;
 		}
 		//
-		if(isNaN($scope.form.diskSize)){
+		if(!(/^\d{1,10}$/.test($scope.form.diskSize))){
+			$scope.items.alert('danger','网盘大小输入错误,必须1-10位数字');
 			return false;
 		}else{
 			temp_obj.diskSize = $scope.form.diskSize;
@@ -522,13 +462,15 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 			id: $scope.form.id
 		};
 		//
-		if(!$scope.form.name){
+		if(!(/^\S{3,16}$/.test($scope.form.name))){
+			$scope.items.alert('danger','用户组名输入错误,必须3-16字符');
 			return false;
 		}else{
 			temp_obj.group = $scope.form.name;
 		}
 		//
-		if(isNaN($scope.form.diskSize)){
+		if(!(/^\d{1,10}$/.test($scope.form.diskSize))){
+			$scope.items.alert('danger','网盘大小输入错误,必须1-10位数字');
 			return false;
 		}else{
 			temp_obj.diskSize = $scope.form.diskSize;
@@ -574,6 +516,7 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 	var run = function(){
 		//
 		angular.extend($scope.form, $scope.items.item);
+		$scope.form.diskSize = +$scope.form.diskSize;
 		//  取镜像
 		getImgs();
 		

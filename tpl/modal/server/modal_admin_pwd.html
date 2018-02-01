@@ -9,7 +9,7 @@
 		<div class="modal-body-title">确定开启部署模式？</div>
 		<div class="body-main">
 			<p>请输入管理员确认密码</p>
-			<input type="password" ng-model="form.pwd" class="form-control" />
+			<input type="password" ng-model="form.pwd" maxlength="64" class="form-control" />
 		</div>
 	</div>
 </div>
@@ -17,5 +17,5 @@
 
 <div class="modal-footer g-modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>确定</button>
   </div>

@@ -10,10 +10,10 @@
 					<a tabindex="-1" class="btn" ng-click="openModalNO()">未注册</a>
 				</li>
 				<li>
-					<a tabindex="-1" class="btn" ng-disabled="!app.registerd">开户系统</a>
+					<a tabindex="-1" ng-click="openModalstartServer()" class="btn" ng-disabled="!app.registerd || sys.isRunning == 1">开启系统</a>
 				</li>
 				<li>
-					<a tabindex="-1" class="btn" ng-disabled="!app.registerd">关闭系统</a>
+					<a tabindex="-1" ng-click="openModalstopServer()" class="btn" ng-disabled="!app.registerd || sys.isRunning == 0">关闭系统</a>
 				</li>
 			</ul>
 		</div>
@@ -59,7 +59,7 @@
 					<a tabindex="-1" href>{{item.name}}</a>
 					<ul class="dropdown-menu" role="menu">
 						<li>
-							<a tabindex="-1" ng-click="openModalCgCtl('reboot',item)">重起</a>
+							<a tabindex="-1" ng-click="openModalCgCtl('reboot',item)">重启</a>
 						</li>
 						<li>
 							<a tabindex="-1" ng-click="openModalCgCtl('shutdown',item)">关机</a>
@@ -68,7 +68,7 @@
 							<a tabindex="-1" href>自动登录镜像</a>
 							<ul class="dropdown-menu" role="menu">
 								<li ng-repeat="item2 in item.imgs">
-									<a tabindex="-1" ng-class="{'active':item2.seleced == 1}" ng-click="openModalAutoImg(item.id,item2.id)"><i class="fa fa-check"></i>{{item2.name}}</a>
+									<a tabindex="-1" ng-class="{'active':item2.seleced == 1}" ng-click="openModalAutoImg(item.id,item2.id)"><i ng-if="item2.seleced == 1" class="fa fa-check"></i>{{item2.name}}</a>
 								</li>
 								<li>
 									<a tabindex="-1" ng-click="openModalAutoImg(item.id, 0)">无</a>
@@ -106,7 +106,12 @@
 	<div class="server-zt m-box">
 		<div class="clearfix">
 			<div class="zt-left">
-				<h3>运行情况：良好</h3>
+				<h3>运行情况：
+					<font color="green" ng-if="sys.status <= 50">好</font>
+					<font color="green" ng-if="sys.status > 50 && sys.status <= 80">良好</font>
+					<font color="coral" ng-if="sys.status > 80 && sys.status <= 90">差</font>
+					<font color="red" ng-if="sys.status > 90">极差</font>
+				</h3>
 				<ul class="left-numb">
 					<li class="col-xs-3">
 						<a>{{sys.tpls}}</a>
@@ -126,7 +131,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="zt-right">
+			<div class="zt-right hidden">
 				<div class="right-one col-xs-4">
 					<div class="right-round">
 						<div class="round-echarts" e-chart ui-options="{{echarts_option1}}"></div>
@@ -221,14 +226,16 @@
 								</thead>
 								<tbody class="ng-scope">
 									<tr role="row" class="odd" ng-repeat="item in table_data.table_res.row">
-										<td>{{item.id}}</td>
+										<td>{{item.name}}</td>
 										<td>
-											<span ng-if="item.status == 1" class="label bg-primary" style="margin-right: 3px;">启用</span>
-											<span ng-if="item.status == 0" class="label bg-danger" style="margin-right: 3px;">禁用</span>
+											{{item.status}}
+											<!--<span ng-if="item.status == 1" class="label bg-primary" style="margin-right: 3px;">启用</span>
+											<span ng-if="item.status == 0" class="label bg-danger" style="margin-right: 3px;">禁用</span>-->
 										</td>
 										<td>{{item.user}}</td>
 										<td>
-											<span class="label bg-primary" ng-repeat="item2 in item.imgs" style="margin-right: 3px;">{{item2[1]}}</span>
+											<span class="label bg-primary" style="margin-right: 3px;">{{item.img}}</span>
+											<!--<span class="label bg-primary" ng-repeat="item2 in item.imgs" style="margin-right: 3px;">{{item2[1]}}</span>-->
 										</td>
 										<td>{{item.ip}}</td>
 										<td>{{item.loginTime}}</td>

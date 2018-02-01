@@ -6,8 +6,8 @@
 	<div class="body-body">
 		<div class="modal-body-title">请输入该序列号的许可证</div>
 		<div class="body-main">
-			<p>Serial NO:627abcfrt9076yhijil26</p>
-			<input type="text" ng-model="form.lic" class="form-control" />
+			<p style="white-space:nowrap;">Serial NO:{{items.ser}}</p>
+			<input type="text" ng-model="form.lic" class="form-control" maxlength="32" />
 		</div>
 	</div>
 </div>
@@ -15,5 +15,5 @@
 
 <div class="modal-footer g-modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>确定</button>
   </div>

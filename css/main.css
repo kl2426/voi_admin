@@ -101,6 +101,13 @@ table.dataTable thead .sorting_asc.td-checkbox:after{content: "";}
 .i-checks input:checked + i:before{background-color: #b18bbb;}
 
 
+
+/*  alert  */
+.m-alert{position: fixed; top: 20px;width: 100%; z-index: 1051;}
+.m-alert .alert-body{width: 300px; margin: 0 auto;}
+.m-alert .alert{margin-bottom: 10px;}
+
+
 /**
  * login
  */
@@ -168,7 +175,8 @@ table.dataTable thead .sorting_asc.td-checkbox:after{content: "";}
     width: 225px;
     background-color: #8f74ae;
 }
-.app-aside{background-color: transparent;}
+.app-aside{background-color: transparent;position: fixed;z-index: 1006;}
+.app-aside:before{background-color: #8e72ac;position:fixed;}
 .app-aside:before{background-image:-webkit-gradient(linear,0% 0%, 0% 100%, from(#856DA9), to(#543E71), color-stop(0.4,#B389B9));}
 .app-header-fixed{padding-top: 57px;}
 
@@ -205,6 +213,8 @@ table.dataTable thead .sorting_asc.td-checkbox:after{content: "";}
 .navi > ul.nav > li > ul > li > a:hover span,
 .navi > ul.nav > li > ul > li > a:focus span{background-color: #786098;}
 .navi .dk {background-color: transparent;}
+
+
 
 
 /*   服务端管理    */
@@ -351,6 +361,8 @@ table.dataTable thead .sorting_asc.td-checkbox:after{content: "";}
 .m-deploy .one .one-body .s4-table .s4-th span:nth-child(1){width: 30%;}
 .m-deploy .one .one-body .s4-table .s4-td .td span:nth-child(2),
 .m-deploy .one .one-body .s4-table .s4-th span:nth-child(2){width: 70%;}
+.m-deploy .one .one-body .s4-table.error1 span{background-color: #CCCCCC;}
+.m-deploy .one .one-body .s4-table.error2 span{background-color: #F1f1f1;}
 
 .m-deploy .one .one-body .one-body-s5{}
 .m-deploy .one .one-body .one-body-s5 > p{font-weight: bold;}
@@ -362,11 +374,11 @@ table.dataTable thead .sorting_asc.td-checkbox:after{content: "";}
 .m-deploy .one .one-body .one-body-s6 .s4-main{margin-top: 0; width: 60%;}
 .m-deploy .one .one-body .one-body-s6 .s4-main .s4-table{width: 100%;}
 .m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-td .td span:nth-child(1),
-.m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-th span:nth-child(1){width: 40%;}
+.m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-th span:nth-child(1){width: 50px;}
 .m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-td .td span:nth-child(2),
-.m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-th span:nth-child(2){width: 30%;}
+.m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-th span:nth-child(2){width: 40%;}
 .m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-td .td span:nth-child(3),
-.m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-th span:nth-child(3){width: 30%;}
+.m-deploy .one .one-body .one-body-s6 .s4-main .s4-table .s4-th span:nth-child(3){width: 40%;}
 
 .m-deploy .one .one-body .one-body-s6 .next{margin: 50px 0; margin-top: -34px;} 
 

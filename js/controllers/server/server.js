@@ -1,13 +1,13 @@
 'use strict';
 
-app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal','toaster', function($scope, $timeout, globalFn, httpService, $modal,toaster) {
+app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '$modal','toaster','$interval', function($scope, $timeout, globalFn, httpService, $modal,toaster, $interval) {
 
 	/**
 	 * 表格1
 	 */
 	$scope.table_data = {
 		//   终端组
-		grp_items: [{id:'',name:'选择终端组'}],
+		grp_items: [],
 		grp_item: "",
 		form: {
 			key: "",
@@ -75,6 +75,8 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	
 	//   系统概况
 	$scope.sys = {
+		//  
+		'status':'良好',
 		//  ip
 		'ip':'',
 		'mask':'',
@@ -86,6 +88,8 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		'userGrps':0,
 		//   用户数
 		'users':0,
+		//   Serial NO
+		'ser':'',
 		//////////////////////
 		//  镜像
 		'img_obj':{
@@ -105,6 +109,8 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		'onlines':0,
 		//   离线终端数
 		'offlines':0,
+		//   系统状态   0 1 
+		'isRunning':0
 	}
 	
 	//   终端组 与镜像
@@ -131,8 +137,10 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 					$scope.table_data.table_res.total = res.data.pageSum;
 					//
 					$scope.table_data.grp_items = res.data.cliGroups;
-					
+					//  添加选项
+					$scope.table_data.grp_items.splice(0,0,{id:'',name:'选择终端组'});
 				} else {
+					$scope.table_data.grp_items = [{id:'',name:'选择终端组'}];
 					$scope.table_data.table_res.row = [];
 				}
 			});
@@ -151,6 +159,10 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 					$scope.sys.userGrps = res.data.userGrps ? res.data.userGrps : 0;
 					$scope.sys.ip = res.data.ip ? res.data.ip : "";
 					$scope.sys.mask = res.data.mask ? res.data.mask : "";
+					$scope.sys.users = res.data.users ? res.data.users : 0;
+					$scope.sys.ser = res.data.ser ? res.data.ser : '';
+					//   系统是否注册
+					$scope.app.registerd = res.data.registerd;
 					//   部署模式
 					$scope.app.deployOn = res.data.deployOn ? res.data.deployOn : 0;
 					//  镜像
@@ -161,6 +173,11 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 					temp_echarts_o.series[0].data[0].value = parseInt($scope.sys.img_obj.used / 100 * $scope.sys.img_obj.diskSpace);
 					temp_echarts_o.series[0].data[1].value = $scope.sys.img_obj.diskSpace;
 					$scope.echarts_option1 = temp_echarts_o;
+					//   运行状态
+					$scope.sys.status = $scope.sys.img_obj.used;
+					//   系统状态
+					$scope.sys.isRunning = res.data.isRunning != undefined ? res.data.isRunning : 0;
+					
 				} else {
 					// $scope.table_data.grp_items = [];
 				}
@@ -225,7 +242,7 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 							$scope.grps[index].imgs[i].seleced = 1;
 						}
 					}
-					console.log('grps',$scope.grps)
+//					console.log('grps',$scope.grps)
 				} else {
 					$scope.grps[index].imgs = [];
 				}
@@ -236,8 +253,9 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	//   终端操作   
 	//   action:  string 允许值: reboot, shutdown,   重起， 关机
 	var cgCtl = function(idarr,action){
-		if(idarr instanceof Array && idarr.length > 0 && action){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cgCtl',{'ids':idarr,'action':action})
+		//  if(idarr instanceof Array && idarr.length > 0 && action){
+		if(1){
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cgCtl',{'gid':idarr,'action':action})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					toaster.pop('success','成功', '操作成功。');
@@ -252,11 +270,13 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	
 	//   client - 设置自启动镜像
 	var autobootImg = function(gid,osid){
-		if(gid && osid){
+		if(gid){
 			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/autobootImg',{'gid':gid,'osid':osid})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					toaster.pop('success','成功', '设置成功');
+					//   刷新
+					getCliGrps();
 				} else {
 					toaster.pop('warning','失败', '设置失败');
 				}
@@ -266,6 +286,43 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		}
 	}
 	
+	
+	
+	//   开启系统
+	var startServer = function(){
+		if(1){
+			httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/startServer')
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					toaster.pop('success','成功', '开启成功');
+					$scope.sys.isRunning = 1;
+				} else {
+					toaster.pop('warning','失败', '开启失败');
+					$scope.sys.isRunning = 0;
+				}
+			});
+		}else{
+			
+		}
+	}
+	
+	//   关闭系统
+	var stopServer = function(){
+		if(1){
+			httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/stopServer')
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					toaster.pop('success','成功', '关闭成功');
+					$scope.sys.isRunning = 0;
+				} else {
+					$scope.sys.isRunning = 1;
+					toaster.pop('warning','失败', '关闭失败');
+				}
+			});
+		}else{
+			
+		}
+	}
 	
 
 	/**
@@ -280,17 +337,20 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			//size: size,
 			resolve: {
 				items: function() {
-					return {};
+					return {
+						'alert':$scope.addAlert,
+						'ser':$scope.sys.ser
+					};
 				}
 			}
 		});
 
 		modalInstance.result.then(function(bol) {
-			$scope.app.registerd = 1;
 			if(bol){
 				toaster.pop('success','成功', '注册完成');
 				$scope.app.registerd = 1;
 			}else{
+				$scope.app.registerd = 0;
 				toaster.pop('warning','失败', '注册失败');
 			}
 			//$scope.selected = selectedItem;
@@ -312,7 +372,9 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			//size: size,
 			resolve: {
 				items: function() {
-					return {};
+					return {
+						'alert':$scope.addAlert
+					};
 				}
 			}
 		});
@@ -444,7 +506,12 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 			controller: 'modalServerIpCtrl',
 			resolve: {
 				items: function() {
-					return {'scope':$scope};
+					return {
+						'scope':$scope,
+						'alert':$scope.addAlert,
+						'ip':$scope.sys.ip,
+						'mask':$scope.sys.mask
+					};
 				}
 			}
 		});
@@ -493,10 +560,10 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 					for(var i in $scope.grps){
 						temp_arr.push($scope.grps[i].id);
 					}
-					cgCtl(temp_arr, str);
+					cgCtl(0, str);
 				}else{
 					//   单个
-					cgCtl([item.id], str);
+					cgCtl(item.id, str);
 				}
 			}
 		}, function() {
@@ -526,6 +593,61 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		modalInstance.result.then(function(bol) {
 			if(bol){
 				autobootImg(gid,osid);
+			}
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	
+	/**
+	 * 开启系统弹窗
+	 */
+	$scope.openModalstartServer = function() {
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/modal/server/modal_alert.html',
+			controller: 'modalAlertCtrl',
+			windowClass: 'm-modal-alert',
+			size: 'sm',
+			resolve: {
+				items: function() {
+					return {'title':'确定要开启系统吗？'};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				startServer();
+			}
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	/**
+	 * 关闭系统弹窗
+	 */
+	$scope.openModalstopServer = function() {
+    
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/modal/server/modal_alert.html',
+			controller: 'modalAlertCtrl',
+			windowClass: 'm-modal-alert',
+			size: 'sm',
+			resolve: {
+				items: function() {
+					return {'title':'确定要关闭系统吗？'};
+				}
+			}
+		});
+
+		modalInstance.result.then(function(bol) {
+			if(bol){
+				stopServer();
 			}
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
@@ -646,6 +768,40 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 	        }
 	    ]
 	};
+	
+	
+	
+	
+	//开始定义定时器
+	var tm=$scope.setglobaldata.gettimer("app.server");
+	if(tm.Key!="app.server"){
+		tm.Key="app.server";
+		tm.keyctrl="app.server";
+		tm.fnAutoRefresh=function(){
+			console.log("开始调用定时器");
+			tm.interval = $interval(function() {
+				//   取服务状态
+				//  sysStatus();
+				//   取终端状态
+				cliStatus();
+			}, 5000);
+		};
+		tm.fnStopAutoRefresh=function(){
+			console.log("进入取消方法");
+			if(tm.interval != null) {
+				$interval.cancel(tm.interval);
+				tm.interval = null;
+				console.log("进入取消成功");
+			}
+			tm.interval=null;
+		};
+		$scope.setglobaldata.addtimer(tm);
+	}
+	//结束定义定时器
+	
+	
+	
+	
 
 	/**
 	 * run
@@ -662,6 +818,8 @@ app.controller('serverCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', '
 		sysStatus();
 		//   取终端状态
 		cliStatus();
+		//
+		tm.fnAutoRefreshfn(tm);
 	}
 	run();
 

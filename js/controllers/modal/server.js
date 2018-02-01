@@ -38,6 +38,10 @@ app.controller('modalServerNOCtrl', ['$scope', 'globalFn', 'httpService','items'
 	};
 	
 	$scope.ok = function(){
+		if(!(/^\S{1,64}$/.test($scope.form.name))){
+			$scope.items.alert('danger','许可证输入错误');
+			return false;
+		}
 		systemReg($scope.form.lic);
 	}
 	
@@ -85,6 +89,9 @@ app.controller('modalServerAdminPwdCtrl', ['$scope', 'globalFn', 'httpService','
 	};
 	
 	$scope.ok = function(){
+		if($scope.form.pwd.length < 1){
+			$scope.items.alert('danger','密码不能为空');
+		}
 		startDeploy($scope.form.pwd);
 	}
 	
@@ -152,11 +159,11 @@ app.controller('modalServerIpCtrl', ['$scope', 'globalFn', 'httpService','items'
 	}
 	
 	
-	$scope.bindKeyUp = function(e,index){
-		var temp_val = $scope.form.ip[index] || '';
+	$scope.bindKeyUp = function(e,index,item,name){
+		var temp_val = item[name][index] || '';
         if (e.keyCode === 110) {
         	$timeout(function(){
-        		$scope.form.ip[index] = temp_val.substr(0, temp_val.length - 1);
+        		item[name][index] = temp_val.substr(0, temp_val.length - 1);
             	$(e.target).parent().next().find('input').focus();
         	},10);
             
@@ -175,9 +182,9 @@ app.controller('modalServerIpCtrl', ['$scope', 'globalFn', 'httpService','items'
         		$(e.target).parent().next().find('input').focus();
         	},10);
             
-        } else if (!(/^\w$/.test(e.key)) && e.key !== 'Backspace') {
+        } else if (!(/^\d$/.test(e.key)) && e.key !== 'Backspace') {
         	$timeout(function(){
-        		$scope.form.ip[index] = temp_val.substr(0, temp_val.length - 1);
+        		item[name][index] = temp_val.substr(0, temp_val.length - 1);
         	},10);
             
             
@@ -193,6 +200,7 @@ app.controller('modalServerIpCtrl', ['$scope', 'globalFn', 'httpService','items'
 		if(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(temp_ip)){
 			temp_obj.ip = temp_ip;
 		}else{
+			$scope.items.alert('danger','IP地址输入错误');
 			return false;
 		}
 		// mac
@@ -200,6 +208,7 @@ app.controller('modalServerIpCtrl', ['$scope', 'globalFn', 'httpService','items'
 		if(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(temp_mask)){
 			temp_obj.mask = temp_mask;
 		}else{
+			$scope.items.alert('danger','子网掩码输入错误');
 			return false;
 		}
 		//
@@ -231,6 +240,13 @@ app.controller('modalServerIpCtrl', ['$scope', 'globalFn', 'httpService','items'
 	
 	//   run
 	var run = function(){
+		//
+		if(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test($scope.items.ip)){
+			$scope.form.ip = $scope.items.ip.split('.');
+		}
+		if(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test($scope.items.mask)){
+			$scope.form.mask = $scope.items.mask.split('.');
+		}
 	}
 	run();
 	

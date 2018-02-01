@@ -52,7 +52,7 @@ var app =
 					//   invalid_token
 					
 					// Session has expired
-					if(response.status == 200 && response.data.retCode == -1 && response.data.msg == "用户未登录") {
+					if(response.status == 200 && response.data.retCode == -1 && response.config.url.indexOf('#/access/signin') < 0 && response.data.msg == "用户未登录") {
 						//    未登录  重新登录 重新发送请求
 						//    删除token
 						opCookie.clearCookie('token');
@@ -60,10 +60,11 @@ var app =
 						
 						
 						//   是否有cookie用户信息   用于验证 超时跳转到登录页
-						if(0&& !opCookie.getCookie('user_info')){
+						if(!opCookie.getCookie('user_info')){
 							//   没有用户信息跳转到登录
-							debugger
+							//debugger
 							window.location.href = window.location.origin + window.location.pathname + '#/access/signin';
+							return $q.reject(response);
 						}else{
 							//    重新取token
 							var SessionService = $injector.get('SessionService');
@@ -75,6 +76,8 @@ var app =
 							return deferred.promise.then(function(res) {
 								if(res.data.retCode == 0){
 									return $http(response.config);
+								}else{
+									return $q.reject(response);
 								}
 							});
 						}

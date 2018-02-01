@@ -35,11 +35,11 @@ app.controller('modalTerminalListAddCtrl', ['$scope', 'globalFn', 'httpService',
 	}
 	
 	
-	$scope.bindKeyUp = function(e,index){
-		var temp_val = $scope.form.mac_arr[index] || '';
+	$scope.bindKeyUp = function(e,index,item,name){
+		var temp_val = item[name][index] || '';
         if (e.keyCode === 110) {
         	$timeout(function(){
-        		$scope.form.mac_arr[index] = temp_val.substr(0, temp_val.length - 1);
+        		item[name][index] = temp_val.substr(0, temp_val.length - 1);
             	$(e.target).parent().next().find('input').focus();
         	},10);
             
@@ -60,7 +60,7 @@ app.controller('modalTerminalListAddCtrl', ['$scope', 'globalFn', 'httpService',
             
         } else if (!(/^\w$/.test(e.key)) && e.key !== 'Backspace') {
         	$timeout(function(){
-        		$scope.form.mac_arr[index] = temp_val.substr(0, temp_val.length - 1);
+        		item[name][index] = temp_val.substr(0, temp_val.length - 1);
         	},10);
             
             
@@ -106,7 +106,9 @@ app.controller('modalTerminalListAddCtrl', ['$scope', 'globalFn', 'httpService',
 	//   添加用户
 	var addClient = function(){
 		var temp_obj = {};
-		if(!$scope.form.name){
+		//
+		if(!(/^\S{3,16}$/.test($scope.form.name))){
+			$scope.items.alert('danger','终端名称输入错误,必须3-16字符');
 			return false;
 		}else{
 			temp_obj.name = $scope.form.name;
@@ -116,10 +118,12 @@ app.controller('modalTerminalListAddCtrl', ['$scope', 'globalFn', 'httpService',
 		if(/^\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}$/.test(temp_mac)){
 			temp_obj.mac = temp_mac;
 		}else{
+			$scope.items.alert('danger','Mac地址输入错误');
 			return false;
 		}
 		//
 		if($scope.form.gid === null){
+			$scope.items.alert('danger','终端组未选择');
 			return false;
 		}else{
 			temp_obj.gid = +$scope.form.gid;
@@ -143,7 +147,9 @@ app.controller('modalTerminalListAddCtrl', ['$scope', 'globalFn', 'httpService',
 		var temp_obj = {
 			mid: $scope.form.id
 		};
-		if(!$scope.form.name){
+		//
+		if(!(/^\S{3,16}$/.test($scope.form.name))){
+			$scope.items.alert('danger','终端名称输入错误,必须3-16字符');
 			return false;
 		}else{
 			temp_obj.name = $scope.form.name;
@@ -153,10 +159,12 @@ app.controller('modalTerminalListAddCtrl', ['$scope', 'globalFn', 'httpService',
 		if(/^\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}$/.test(temp_mac)){
 			temp_obj.mac = temp_mac;
 		}else{
+			$scope.items.alert('danger','Mac地址输入错误');
 			return false;
 		}
 		//
 		if($scope.form.gid === null){
+			$scope.items.alert('danger','终端组未选择');
 			return false;
 		}else{
 			temp_obj.gid = +$scope.form.gid;
@@ -268,6 +276,11 @@ app.controller('modalTerminalListMoveCtrl', ['$scope', 'globalFn', 'httpService'
 	};
 	
 	$scope.ok = function(){
+		if(!$scope.form.gid){
+			$scope.items.alert('danger','终端组必选');
+			return false;
+		}
+		//
 		$modalInstance.close($scope.form.gid);
 	}
 	
@@ -347,6 +360,11 @@ app.controller('modalTerminalListUserCtrl', ['$scope', 'globalFn', 'httpService'
 	};
 	
 	$scope.ok = function(){
+		if(!$scope.form.user_id){
+			$scope.items.alert('danger','用户必选');
+			return false;
+		}
+		//
 		bindUsers($scope.form.id, $scope.form.user_id);
 	}
 	
@@ -472,10 +490,10 @@ app.controller('modalTerminalTypeAddCtrl', ['$scope', 'globalFn', 'httpService',
 	//   添加终端组
 	var addCliGrp = function(){
 		var temp_obj = {};
-		if(!$scope.form.name){
+		if(!(/^\S{3,16}$/.test($scope.form.name))){
+			$scope.items.alert('danger','终端组名称输入错误,必须3-16字符');
 			return false;
 		}else{
-			//   组名
 			temp_obj.name = $scope.form.name;
 		}
 		//

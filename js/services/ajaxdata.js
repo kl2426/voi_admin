@@ -10,15 +10,22 @@
 /**
  * 
  */
-angular.module('app').factory('httpService', function ($http, $q) {
+angular.module('app').factory('httpService', function ($http, $q, $location) {
 	//
 	var http = {
 		dev:{
+			protocol: $location.protocol() + ':',
+			hostname: $location.host(),
+			port: $location.port(),
+			hash:''
+		},
+		dev2:{
 			protocol:'http:',
-			hostname:'192.168.13.32',
+			hostname:'192.168.0.167',
 			port:'80',
 			hash:''
 		}
+		
 	}
 	http.dev.origin = http.dev.protocol + '//' + http.dev.hostname + ':' + http.dev.port;
 	//http.dev.origin = "";
@@ -66,6 +73,7 @@ angular.module('app').factory('httpService', function ($http, $q) {
         },
         //POST请求
         ajaxPost: function (url, data, out, params) {
+        	out ? out : out = 30 * 1000;
             var deferred = $q.defer();
             $http({
                 url: url,

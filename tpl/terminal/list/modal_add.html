@@ -14,7 +14,7 @@
 						<div class="form-group">
 							<label class="group-left control-label">终端名称：</label>
 							<div class="group-body">
-								<input type="text" ng-model="form.name" ng-disabled="items.operate != 'add'" class="form-control" placeholder="输入终端名称" />
+								<input type="text" ng-model="form.name" ng-disabled="items.operate != 'add'" class="form-control" maxlength="16" placeholder="输入终端名称" />
 							</div>
 						</div>
 					</div>
@@ -22,7 +22,7 @@
 						<div class="form-group">
 							<label class="group-left control-label">计算机名：</label>
 							<div class="group-body">
-								<input type="text" ng-model="form.clientName" class="form-control" placeholder="输入计算机名" />
+								<input type="text" ng-model="form.clientName" class="form-control" maxlength="16" placeholder="输入计算机名" />
 							</div>
 						</div>
 					</div>
@@ -36,12 +36,12 @@
 								</style>
 								<div class="m-server-ip form-control">
 									<div class="server-ip-nb">
-										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[0]" ng-keyup="bindKeyUp($event,0)" maxlength="2" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[1]" ng-keyup="bindKeyUp($event,1)" maxlength="2" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[2]" ng-keyup="bindKeyUp($event,2)" maxlength="2" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[3]" ng-keyup="bindKeyUp($event,3)" maxlength="2" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[4]" ng-keyup="bindKeyUp($event,4)" maxlength="2" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[5]" ng-keyup="bindKeyUp($event,5)" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[0]" ng-keyup="bindKeyUp($event,0,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[1]" ng-keyup="bindKeyUp($event,1,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[2]" ng-keyup="bindKeyUp($event,2,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[3]" ng-keyup="bindKeyUp($event,3,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[4]" ng-keyup="bindKeyUp($event,4,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[5]" ng-keyup="bindKeyUp($event,5,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
 									</div>
 								</div>
 							</div>
@@ -69,5 +69,5 @@
 
 <div class="modal-footer g-modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>确定</button>
   </div>

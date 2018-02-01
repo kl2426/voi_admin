@@ -1,53 +1,53 @@
 <div class="g-content m-deploy">
 	<div class="deploy-title">
-		<span>当前部署模式状态：<font color="green">已开启</font><font color="red">关闭</font></span><a class="btn btn-info">退出部署模式</a>
+		<span>当前部署模式状态：<font color="green" ng-if="app.deployOn == 1" >已开启</font><font color="red" ng-if="app.deployOn == 0" >关闭</font></span><a class="btn btn-info" ng-if="app.deployOn == 1" ng-click="openModalAdminPwdExit()">退出部署模式</a>
 	</div>	
 	<!--  s1  -->
-	<div class="deploy-box one hidden">
+	<div class="deploy-box one" ng-if="status == 1">
 		<div class="one-title"><span>步骤一：开启部署模式</span></div>
 		<div class="one-body">
 			<div class="one-body-s1">
 				<p><i class="fa  fa-exclamation-circle"></i>在终端固件升级或分发镜像前必须开启部署模式~！</p>
-				<div class="text-center"><a class="btn btn-info">开启部署模式</a></div>
-				<div class="next text-right"><a class="btn btn-info">下一步</a></div>
+				<div class="text-center"><a class="btn btn-info" ng-click="openModalAdminPwd()" ng-disabled="app.deployOn == 1">开启部署模式</a></div>
+				<div class="next text-right"><a class="btn btn-info" ng-disabled="app.deployOn != 1" ng-click="status_1_next()">下一步</a></div>
 			</div>
 		</div>
 	</div>
 	<!--  s2  -->
-	<div class="deploy-box one hidden">
+	<div class="deploy-box one" ng-if="status == 2">
 		<div class="one-title"><span>步骤二：选择终端固件升级或分发镜像</span></div>
 		<div class="one-body">
 			<div class="one-body-s2">
 				<p>请选择终端固件升级或分发镜像进行下一步</p>
 				<div>
 					<label class="checkbox i-checks m-l-md m-b-md">
-			          <input type="checkbox" ng-model="oneAtATime1"><i></i>
+			          <input type="radio" name="operate" disabled="disabled" ng-checked="form.operate == 'updata'" ng-click="operateChange('updata')"><i></i>
 			          终端固件升级
 			        </label>
 			        <label class="checkbox i-checks m-l-md m-b-md">
-			          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+			          <input type="radio" name="operate" ng-checked="form.operate == 'img'" ng-click="operateChange('img')"><i></i>
 			          分发镜像
 			        </label>
 				</div>
-				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+				<div class="next text-right"><a class="btn btn-info" ng-click="status_2_prev()">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info" ng-click="status_2_next()">下一步</a></div>
 			</div>
 		</div>
 	</div>
 	<!--  s3  -->
-	<div class="deploy-box one hidden">
+	<div class="deploy-box one" ng-if="status == 3">
 		<div class="one-title"><span>步骤三：选择终端组</span></div>
 		<div class="one-body">
 			<div class="one-body-s3">
 				<p>请选择终端组进入部署模式</p>
 				<div class="s3-main">
 					<div class="row">
-						<div class="col-xs-4">
+						<div class="col-xs-6">
 							<div class="form-group">
 								<label class="group-left control-label">终端组选择：</label>
 								<div class="group-body">
-									<ui-select ng-model="form.tplId_item" ng-change="tplIdChange(form.tplId_item)" theme="bootstrap" ng-disabled="true">
-										<ui-select-match placeholder="选择镜像模板">{{$select.selected.name}}</ui-select-match>
-										<ui-select-choices group-by="'group'" repeat="item in form.tplId_items | filter: $select.search">
+									<ui-select ng-model="grp.grp_item" ng-change="grpChange(grp.grp_item)" theme="bootstrap">
+										<ui-select-match placeholder="选终端组">{{$select.selected.name}}</ui-select-match>
+										<ui-select-choices group-by="'group'" repeat="item in grp.grp_items | filter: $select.search">
 											<span ng-bind-html="item.name | highlight: $select.search"></span>
 										</ui-select-choices>
 									</ui-select>
@@ -58,27 +58,27 @@
 					
 					<div>
 						<label class="checkbox i-checks m-l-md m-b-md">
-				          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+				          <input type="checkbox" ng-checked="form.grpR == 1" ng-model="form.grpR"><i></i>
 				          重起所选终端组
 				        </label>
 					</div>
 				</div>
-				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+				<div class="next text-right"><a class="btn btn-info" ng-click="status_3_prev()">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info" ng-click="status_3_next()" submit-timeout>下一步</a></div>
 			</div>
 		</div>
 	</div>
 	
 	
 	<!--  s4  -->
-	<div class="deploy-box one hidden">
+	<div class="deploy-box one" ng-if="status == 4">
 		<div class="one-title"><span>步骤四：等待终端进入部署模式</span></div>
 		<div class="one-body">
 			<div class="one-body-s4">
 				<p>等待终端进入部署模式...</p>
 				<div class="s4-main">
 					<div class="title">
-						<span>机房组的终端数：18</span>
-						<span>已进入部署模式的终端数：15</span>
+						<span>机房组的终端数：{{form.client.total}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<span>已进入部署模式的终端数：<b>{{form.client.ready}}</b></span>
 					</div>
 					<div class="s4-table">
 						<div class="s4-bg"></div>
@@ -87,28 +87,20 @@
 							<span>IP地址</span>
 						</div>
 						<div class="s4-td">
-							<div class="td">
-								<span>0101</span>
-								<span>192.168.0.11</span>	
-							</div>
-							<div class="td">
-								<span>0101</span>
-								<span>0101</span>	
-							</div>
-							<div class="td">
-								<span>0101</span>
-								<span>0101</span>	
+							<div class="td" ng-repeat="item in form.client.row" ng-class="{'error1':1,'error2:2'}[item.status]">
+								<span>{{item.name}}</span>
+								<span>{{item.ip}}</span>	
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+				<div class="next text-right"><a class="btn btn-info" ng-click="status_4_prev()">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info" ng-click="status_4_next()">下一步</a></div>
 			</div>
 		</div>
 	</div>
 	
 	<!--  s5  -->
-	<div class="deploy-box one hidden">
+	<div class="deploy-box one" ng-if="status == 5">
 		<div class="one-title"><span>步骤五：选择固件</span></div>
 		<div class="one-body">
 			<div class="one-body-s5">
@@ -125,14 +117,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">下一步</a></div>
+				<div class="next text-right"><a class="btn btn-info" ng-click="status_5_prev()">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info" ng-click="status_5_next()">下一步</a></div>
 			</div>
 		</div>
 	</div>
 	
 	
 	<!--  s6  -->
-	<div class="deploy-box one">
+	<div class="deploy-box one" ng-if="status == 6">
 		<div class="one-title"><span>步骤六：选择镜像</span></div>
 		<div class="one-body">
 			<div class="one-body-s4 one-body-s6">
@@ -141,7 +133,7 @@
 						<span>请选择镜像对机房组进行部署</span>
 						<span class="pull-right">
 							<label class="checkbox i-checks m-l-md m-b-md">
-					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
+					          <input type="checkbox" ng-model="form.imgs.clear_old" ng-disabled="is_deploy"><i></i>
 					          清除终端原有镜像
 					        </label>	
 						</span>
@@ -150,65 +142,35 @@
 						<div class="s4-th">
 							<span>
 								<label class="checkbox i-checks m-l-md m-b-md">
-					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
-					        镜像名称
+					          <input type="checkbox" ng-model="form.imgs.checked_all" ng-disabled="is_deploy"><i></i>
 					        </label>	
 							</span>
-							<span>最近部署</span>
-							<span>部署数量</span>
+							<span>ID</span>
+							<span>镜像名称</span>
 						</div>
 						<div class="s4-td">
-							<div class="td">
+							<div class="td" ng-repeat="item in form.imgs.row">
 								<span>
 									<label class="checkbox i-checks m-l-md m-b-md">
-					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
-					        win7.img
+					          <input type="checkbox" ng-model="item.checked" ng-disabled="is_deploy"><i></i>
 					        </label>
 								</span>
-								<span>2017-09-21 11:05</span>	
-								<span>5</span>	
-							</div>
-							<div class="td">
-								<span>
-									<label class="checkbox i-checks m-l-md m-b-md">
-					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
-					        win7.img
-					        </label>
-								</span>
-								<span>2017-09-21 11:05</span>	
-								<span>5</span>	
-							</div>
-							<div class="td">
-								<span>
-									<label class="checkbox i-checks m-l-md m-b-md">
-					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
-					        win7.img
-					        </label>
-								</span>
-								<span>2017-09-21 11:05</span>	
-								<span>5</span>	
-							</div>
-							<div class="td">
-								<span>
-									<label class="checkbox i-checks m-l-md m-b-md">
-					          <input type="checkbox" ng-model="oneAtATime2"><i></i>
-					        win7.img
-					        </label>
-								</span>
-								<span>2017-09-21 11:05</span>	
-								<span>5</span>	
+								<span>{{item.id}}</span>	
+								<span>{{item.name}}</span>
 							</div>
 						</div>
 					</div>
 				</div>
 				
-				<div class="next text-right"><a class="btn btn-info">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info">开始部署</a></div>
+				<div class="next text-right"><a class="btn btn-info" ng-disabled="!status_6_prev_show" ng-click="status_6_prev()">上一步</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info" ng-disabled="!status_6_next_show" ng-click="status_6_next()" submit-timeout>开始部署</a></div>
 				
-				<div class="s6-bs row">
+				<div class="s6-bs row" ng-if="is_deploy">
 					<div class="col-xs-6">
 						<div class="bs-left">
-							<p>部署终端列表&nbsp;&nbsp;18</p>
-							<span>正在部署中...</span>
+							<p>部署终端列表&nbsp;&nbsp;{{form.client.total}}</p>
+							<span>正在部署中...</span>&nbsp;&nbsp;
+							<span><font color="red">部署中断：0</font></span>&nbsp;&nbsp;
+							<span><font color="brown">部署中硬件异常：0</font></span>
 							<div class="s4-table">
 								<div class="s4-bg"></div>
 								<div class="s4-th">
@@ -216,17 +178,9 @@
 									<span>IP地址</span>
 								</div>
 								<div class="s4-td">
-									<div class="td">
-										<span>0101</span>
-										<span>192.168.0.11</span>	
-									</div>
-									<div class="td">
-										<span>0101</span>
-										<span>0101</span>	
-									</div>
-									<div class="td">
-										<span>0101</span>
-										<span>0101</span>	
+									<div class="td" ng-repeat="item in form.client.row" ng-class="{'error1':1,'error2:2'}[item.status]">
+										<span>{{item.name}}</span>
+										<span>{{item.ip}}</span>	
 									</div>
 								</div>
 							</div>
@@ -234,7 +188,7 @@
 					</div>
 					<div class="col-xs-6">
 						<div class="bs-right">
-							<p>部署进度</p>
+							<p>部署进度&nbsp;&nbsp;&nbsp;<font color="red">（部署完成）</font></p>
 							<div class="right-jd">
 								<p>总进度（1/2）</p>
 					            <progressbar class="progress-striped active m-b-sm" value="20" type="success"><b>20%</b></progressbar>

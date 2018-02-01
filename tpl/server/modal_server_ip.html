@@ -16,10 +16,10 @@
 							<div class="group-body">
 								<div class="m-server-ip form-control">
 									<div class="server-ip-nb">
-										<div class="server-ip-input"><input type="text" ng-model="form.ip[0]" ng-keyup="bindKeyUp($event,0)" maxlength="3" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.ip[1]" ng-keyup="bindKeyUp($event,1)" maxlength="3" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.ip[2]" ng-keyup="bindKeyUp($event,2)" maxlength="3" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.ip[3]" ng-keyup="bindKeyUp($event,3)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[0]" ng-keyup="bindKeyUp($event,0,form,'ip')" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[1]" ng-keyup="bindKeyUp($event,1,form,'ip')" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[2]" ng-keyup="bindKeyUp($event,2,form,'ip')" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.ip[3]" ng-keyup="bindKeyUp($event,3,form,'ip')" maxlength="3" onfocus="this.select();" /></div>
 									</div>
 								</div>
 							</div>
@@ -31,10 +31,10 @@
 							<div class="group-body">
 								<div class="m-server-ip form-control">
 									<div class="server-ip-nb">
-										<div class="server-ip-input"><input type="text" ng-model="form.mask[0]" ng-keyup="bindKeyUp($event,0)" maxlength="3" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mask[1]" ng-keyup="bindKeyUp($event,1)" maxlength="3" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mask[2]" ng-keyup="bindKeyUp($event,2)" maxlength="3" onfocus="this.select();" /></div>
-										<div class="server-ip-input"><input type="text" ng-model="form.mask[3]" ng-keyup="bindKeyUp($event,3)" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[0]" ng-keyup="bindKeyUp($event,0,form,'mask')" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[1]" ng-keyup="bindKeyUp($event,1,form,'mask')" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[2]" ng-keyup="bindKeyUp($event,2,form,'mask')" maxlength="3" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mask[3]" ng-keyup="bindKeyUp($event,3,form,'mask')" maxlength="3" onfocus="this.select();" /></div>
 									</div>
 								</div>
 							</div>
@@ -166,5 +166,5 @@
 
 <div class="modal-footer g-modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>确定</button>
   </div>

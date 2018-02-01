@@ -132,6 +132,24 @@ angular.module('app')
 	        restrict: 'A',
 	        link: link
 	    };
+	}])
+	
+	
+	//    提交锁定
+	//    提交按键点击
+	.directive('submitTimeout', ['$timeout',function ($timeout) {
+	    function link($scope, element, attrs) {
+	    	element.on("click",function(){
+	    		element.attr("disabled","disabled");
+	    		$timeout(function() {
+					element.removeAttr('disabled');
+				}, 3000);
+	    	});
+	    }
+	    return {
+	        restrict: 'A',
+	        link: link
+	    };
 	}]);
 
 

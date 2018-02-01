@@ -116,8 +116,9 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					$scope.table_data.grp_items = res.data.grps;
+					$scope.table_data.grp_items.splice(0,0,{'id':'','name':'选择终端组'});
 				} else {
-					$scope.table_data.grp_items = [];
+					$scope.table_data.grp_items = [{'id':'','name':'选择终端组'}];
 				}
 			});
 	}
@@ -160,6 +161,7 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/unbind',{'mid':mid})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
+					$scope.table_search();
 					toaster.pop('success','成功', '解绑成功');
 				} else {
 					toaster.pop('warning','失败', '解绑失败');
@@ -242,6 +244,11 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
 		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
+		}
 		// 
 		openMove('move',{},function(gid){
 			chgCliGrp(temp_arr,gid);
@@ -257,6 +264,11 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		var temp_arr = [];
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
+		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
 		}
 		// 
 		openDel(function(){
@@ -275,6 +287,11 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		var temp_arr = [];
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
+		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
 		}
 		//
 		openCliCtrl(name,function(){
@@ -300,6 +317,7 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 					return {
 						'operate': str,
 						'item': item,
+						'alert': $scope.addAlert
 					};
 				}
 			}
@@ -328,6 +346,7 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 					return {
 						'operate': str,
 						'item': item,
+						'alert': $scope.addAlert 
 					};
 				}
 			}
@@ -357,6 +376,7 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 					return {
 						'operate': str,
 						'item': item,
+						'alert': $scope.addAlert 
 					};
 				}
 			}
@@ -364,6 +384,7 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 
 		modalInstance.result.then(function(bol) {
 			if(bol) {
+				$scope.table_search();
 				toaster.pop('success','成功', '绑定成功');
 			} else {
 				toaster.pop('warning','失败', '绑定失败');
@@ -377,7 +398,7 @@ app.controller('terminalListCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	/**
 	 * 解绑
 	 */
-	var openUnbind = function(item) {
+	$scope.openUnbind = function(item) {
 		var modalInstance = $modal.open({
 			templateUrl: 'tpl/modal/server/modal_alert.html',
 			controller: 'modalAlertCtrl',
@@ -608,8 +629,9 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 	//   终端操作   
 	//   action:  string 允许值: reboot, shutdown,   重起， 关机
 	var cgCtl = function(idarr,action){
-		if(idarr instanceof Array && idarr.length > 0 && action){
-			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cgCtl',{'ids':idarr,'action':action})
+		//if(idarr instanceof Array && idarr.length > 0 && action){
+		if(1){
+			httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/cgCtl',{'gid':idarr,'action':action})
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
 					$scope.table_search();
@@ -640,12 +662,12 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		}else if (str == 'reboot'){
 			//   重起
 			openCliCtrl('重起',function(){
-				cgCtl([item.id],'reboot');
+				cgCtl(item.id,'reboot');
 			});
 		}else if (str == 'shutdown'){
 			//   关机
 			openCliCtrl('关机',function(){
-				cgCtl([item.id],'shutdown');
+				cgCtl(item.id,'shutdown');
 			});
 		}
 	}
@@ -660,6 +682,11 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		var temp_arr = [];
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
+		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
 		}
 		// 
 		openDel(function(){
@@ -678,6 +705,11 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 		var temp_arr = [];
 		for(var i in temp_ck){
 			temp_arr.push(temp_ck[i].id);
+		}
+		//
+		if(temp_arr.length < 1){
+			$scope.addAlert('danger','未选中条目');
+			return false;
 		}
 		//
 		openCliCtrl(name,function(){
@@ -703,6 +735,7 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 					return {
 						'operate': str,
 						'item': item,
+						'alert': $scope.addAlert
 					};
 				}
 			}

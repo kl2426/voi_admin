@@ -14,7 +14,7 @@
 						<div class="form-group">
 							<label class="group-left control-label">模板名称：</label>
 							<div class="group-body">
-								<input type="text" ng-model="form.name" class="form-control" placeholder="输入模板名称" />
+								<input type="text" ng-model="form.name" class="form-control" maxlength="16" placeholder="输入模板名称" />
 							</div>
 						</div>
 					</div>
@@ -49,7 +49,7 @@
 						<div class="form-group">
 							<label class="group-left control-label">镜像大小(G)：</label>
 							<div class="group-body">
-								<input type="text" ng-model="form.size" ng-disabled="items.operate == 'new'" class="form-control" placeholder="输入镜像大小" />
+								<input type="text" ng-model="form.size" ng-disabled="items.operate == 'new'" maxlength="10" class="form-control" placeholder="输入镜像大小" />
 							</div>
 						</div>
 					</div>
@@ -101,5 +101,5 @@
 
 <div class="modal-footer g-modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
-    <button type="button" class="btn btn-info" ng-click="ok()">保存</button>
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>确定</button>
 </div>

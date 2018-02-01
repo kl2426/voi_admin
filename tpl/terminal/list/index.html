@@ -30,7 +30,7 @@
 		</div>
 		<div class="col-xs-12 server-menu">
 			<a class="btn btn-info" ng-click="table_operate('add',null)">注册终端</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<div class="btn-group dropdown" dropdown style="margin-right: 0;">
+			<!--<div class="btn-group dropdown" dropdown style="margin-right: 0;">
 				<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
 	              启/停用<span class="caret"></span>
 	            </button>
@@ -43,7 +43,7 @@
 					</li>
 				</ul>
 			</div>
-			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
 			<a class="btn btn-info" ng-click="batchDel()">批量删除</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<a class="btn btn-info" ng-click="batchCliCtrl('reboot','重起')">批量重启</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<a class="btn btn-info" ng-click="batchCliCtrl('shutdown','关机')">批量关机</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -74,7 +74,7 @@
 										<th>Mac地址</th>
 										<th>终端组</th>
 										<th>绑定用户</th>
-										<th>是否启用</th>
+										<!--<th>是否启用</th>-->
 										<th>操作</th>
 									</tr>
 								</thead>
@@ -90,23 +90,23 @@
 										<td>{{item.mac}}</td>
 										<td>{{item.grpName}}</td>
 										<td>
-											<a ng-if="item.user" ng-click="openUnbind(item)" class="btn btn-info btn-xs">解绑</a>
+											<a ng-if="item.user" ng-click="openUnbind(item)" class="btn btn-danger btn-xs">解绑</a>
 											<a ng-if="!item.user" ng-click="openUser('edit',item)" class="btn btn-info btn-xs">绑定</a>
 											{{item.user}}
 										</td>
-										<td>
+										<!--<td>
 											<span ng-if="item.isApproved == 1" class="label bg-primary" style="margin-right: 3px;">启用</span>
-											<span ng-if="item.isApproved == 0" class="label bg-danger" style="margin-right: 3px;">禁用</span>
-										</td>
+											<span ng-if="item.isApproved == 0" class="label bg-danger" style="margin-right: 3px;">停用</span>
+										</td>-->
 										<td class="m-operate" ng-if="item.id != 1">
 											<div class="btn-group" dropdown=""><button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button><button type="button" class="btn btn-xs btn-info dropdown-toggle" dropdown-toggle="" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span>  <span class="sr-only">修改</span></button>
 												<ul class="dropdown-menu" role="menu">
-													<li ng-if="item.isApproved == 0">
+													<!--<li ng-if="item.isApproved == 0">
 														<a ng-click="table_operate('approve',item)">启用</a>
 													</li>
 													<li ng-if="item.isApproved == 1">
 														<a ng-click="table_operate('reject',item)">停用</a>
-													</li>
+													</li>-->
 													<li>
 														<a ng-click="table_operate('reboot',item)">重起</a>
 													</li>
