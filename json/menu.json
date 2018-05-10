@@ -152,6 +152,20 @@
 				"isChecked": false
 			}
 		]
+	}, {
+		"fuceid": "105",
+		"fucecode": "LOG-LIST",
+		"fucename": "日志管理",
+		"fucelevel": "1",
+		"fucedesc": "日志管理",
+		"fuceresource": "#",
+		"fuceindex": "1",
+		"fuceparentcode": "0",
+		"fuceismenu": "1",
+		"isdel": 0,
+		"ownerType": 0,
+		"isChecked": false,
+		"childrenList": []
 	}
 	
 ]

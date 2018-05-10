@@ -42,7 +42,7 @@
 										<th>用户组名</th>
 										<th>组描述</th>
 										<th>镜像</th>
-										<th>网盘大小</th>
+										<!--<th>网盘大小</th>-->
 										<!--<th>创建时间</th>-->
 										<th>操作</th>
 									</tr>
@@ -59,7 +59,7 @@
 										<td>
 											<span class="label bg-primary" ng-repeat="item2 in item.imgs" style="margin-right: 3px;">{{item2[1]}}</span>
 										</td>
-										<td>{{item.diskSize}}</td>
+										<!--<td>{{item.diskSize}}</td>-->
 										<!--<td>--</td>-->
 										<td class="m-operate" ng-if="item.id != 1 && item.id != 2">
 											<div class="btn-group" dropdown=""><button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button><button type="button" class="btn btn-xs btn-info dropdown-toggle" dropdown-toggle="" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span>  <span class="sr-only">修改</span></button>

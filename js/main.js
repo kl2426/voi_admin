@@ -13,7 +13,7 @@ angular.module('app')
       // config
       $scope.app = {
         name: '透明计算管理系统',
-        version: 'X 1.0.0',
+        version: 'X 1.2.0',
         // for chart colors
         color: {
           primary: '#7266ba',
@@ -43,7 +43,9 @@ angular.module('app')
         //   系统是否注册 0 未注册   1  已注册 
         registerd:0,
         //   是否进入部署模式  0  1已进入
-        deployOn:0
+        deployOn:0,
+        //   策略模式  0为终端模式，1为用户模式
+        DevMode:'1'
       }
 
       // save settings to local storage
@@ -187,6 +189,45 @@ angular.module('app')
 						}
 					});
 			}
+			
+			
+			
+			/**
+			 * system - 获取当前外设模式
+			 */
+			var getDevMode = function(cb) {
+				httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/getDevMode')
+					.then(function(res) {
+						if(res.status == 200 && res.data.retCode == 0) {
+							//
+							$scope.app.DevMode = res.data.mode;
+						} else {
+							// $scope.table_data.grp_items = [];
+						}
+					});
+			}
+			
+			
+			/**
+			 * system - 获取当前外设模式
+			 */
+			$scope.chgDevMode = function(i) {
+				httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/chgDevMode',{
+					mode:$scope.app.DevMode
+				})
+					.then(function(res) {
+						if(res.status == 200 && res.data.retCode == 0) {
+							//
+							toaster.pop('success','成功', '设置成功。');
+							//
+							$scope.app.DevMode = i;
+							//
+							toaster.pop('Info','提示', '需要重启终端才会生效。');
+						} else {
+							toaster.pop('warning','失败', '设置失败。');
+						}
+					});
+			}
       
       
       /**
@@ -297,6 +338,8 @@ angular.module('app')
       var run = function(){
       	//   取nav菜单
       	$scope.getNav();
+      	//   取
+      	getDevMode();
       	//   取用户信息
       	//$scope.getUserInfo();
       	

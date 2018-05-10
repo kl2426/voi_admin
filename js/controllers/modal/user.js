@@ -24,7 +24,9 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		//   原密码
 		pwd: '',
 		//   新密码
-		newpwd: ''
+		newpwd: '',
+		//   网盘大小
+		diskSize:'0'
 		
 	}
 	
@@ -38,6 +40,15 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 	$scope.terminals.items = [];
 	$scope.terminals.item = {};
 	
+	//   网盘
+	//   是否分配网盘
+	$scope.diskSize = {};
+	$scope.diskSize.items = [
+		{"name":"是",val:true},
+		{"name":"否",val:false},
+	];
+	$scope.diskSize.item = $scope.diskSize.items[1];
+	
 	//   用户组change
 	$scope.groupsChange = function(item){
 		$scope.form.gid = item.id;
@@ -49,7 +60,6 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		$scope.form.mGrpName = item.name;
 		$scope.form.mGid = item.id;
 	}
-	
 	
 	
 	//    取用户组
@@ -114,6 +124,13 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		}else{
 			temp_obj.mGid = $scope.form.mGid;
 		}
+		//   验证用户网盘
+		if($scope.diskSize.item.val > 0 && !(/^\d{1,16}$|^\d{1,10}.\d{1,10}$/.test($scope.form.diskSize))){
+			$scope.items.alert('danger','网盘大小输入错误');
+			return false;
+		}
+		temp_obj.diskSize = $scope.form.diskSize;
+		
 		//
 		temp_obj.realName = $scope.form.realName;
 		//
@@ -203,6 +220,11 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 	var run = function(){
 		//
 		angular.extend($scope.form, $scope.items.item);
+		//  diskSize 默认值
+		if($scope.form.diskSize > 0){
+			$scope.diskSize.item = $scope.diskSize.items[0];
+		}
+		
 		//  取用户组
 		getUserGroups();
 		//  终端组
@@ -373,6 +395,8 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		diskSize: 0,
 		//   描述
 		desc : null,
+		//
+		devRule: 0
 	}
 	
 	//   镜像
@@ -381,12 +405,35 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 	$scope.imgs.item = [];
 	
 	
+	//   外设策略
+	$scope.devRule = {}
+	$scope.devRule.items = [
+		{"name":"声卡","val":"1"},
+		{"name":"打印机","val":"2"},
+		{"name":"存储设备","val":"4"},
+		{"name":"智能卡","val":"8"},
+		{"name":"摄像头","val":"16"},
+		{"name":"蓝牙","val":"32"},
+		{"name":"其他","val":"64"},
+		{"name":"串口","val":"128"},
+	];
+	$scope.devRule.item = [];
+	
+	
 	//   用户组change
 	$scope.imgsChange = function(items){
 		$scope.form.imgs_ids = [];
 		for(var i in items){
 			$scope.form.imgs_ids.push(items[i].imgs_ids.id);
 		}
+	}
+	//   用户组change
+	$scope.devRuleChange = function(items){
+		var temp_nb = 0;
+		for(var i in items){
+			temp_nb = temp_nb + +items[i].val;
+		}
+		$scope.form.devRule = temp_nb;
 	}
 	
 	//    取镜像
@@ -443,6 +490,7 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		//
 		temp_obj.imgs  = $scope.form.imgs_ids;
 		temp_obj.desc  = $scope.form.desc;
+		temp_obj.devRule  = $scope.form.devRule;
 		
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/addGroup',temp_obj)
 		.then(function(res) {
@@ -478,6 +526,7 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		//
 		temp_obj.imgs  = $scope.form.imgs_ids;
 		temp_obj.desc  = $scope.form.desc;
+		temp_obj.devRule  = $scope.form.devRule;
 		//
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/modifyGroup',temp_obj)
 		.then(function(res) {
@@ -517,6 +566,14 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 		//
 		angular.extend($scope.form, $scope.items.item);
 		$scope.form.diskSize = +$scope.form.diskSize;
+		//   默认 外设配置
+		//   解析外设
+		$scope.devRule.item = [];
+		for(var i in $scope.devRule.items){
+			if(($scope.form.devRule & $scope.devRule.items[i].val) > 0){
+				$scope.devRule.item.push($scope.devRule.items[i]);
+			}
+		}
 		//  取镜像
 		getImgs();
 		
@@ -530,6 +587,170 @@ app.controller('modalUserTypeAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 	}
 	run();
 }]);
+
+
+
+
+
+
+
+
+
+
+/**
+ * 上传用户
+ */
+app.controller('modalUserListInfileCtrl', ['$scope', 'globalFn', 'httpService','items','$modalInstance','toaster','$http','FileUploader','opCookie', function($scope,  globalFn, httpService,items,$modalInstance,toaster,$http,FileUploader,opCookie) {
+	//   items
+	$scope.items = items;
+	
+	//   form
+	$scope.form = {
+		//
+		filename:'',
+		//   用户组ID
+		gid: null,
+		//
+		pwdType:'',
+		
+	}
+	
+	//   用户组
+	$scope.groups = {}
+	$scope.groups.items = [];
+	$scope.groups.item = "";
+	
+	
+	//   密码类型(0: 重置密码;1 明文;2 md5加密)   允许值: 0, 1, 2
+	$scope.pwdType = {}
+	$scope.pwdType.items = [
+		{"name":"重置密码","val":"0"},
+		{"name":"明文","val":"1"},
+		{"name":"md5加密","val":"2"},
+	];
+	$scope.pwdType.item = $scope.pwdType.items[1];
+	$scope.form.pwdType = $scope.pwdType.item.val;
+	
+	
+	//   用户组change
+	$scope.groupsChange = function(item){
+		$scope.form.gid = item.id;
+	}
+	
+	
+	
+	//    取用户组
+	var getUserGroups = function() {
+		httpService.ajaxGet(httpService.API.origin + '/rest/ajax.php/getUserGroups')
+			.then(function(res) {
+				if(res.status == 200 && res.data.retCode == 0) {
+					$scope.groups.items = res.data.groups;
+					//  输入用户组
+					for(var i in $scope.groups.items){
+						if($scope.groups.items[i].id == $scope.form.gid){
+							$scope.groups.item = $scope.groups.items[i];
+						}
+						if($scope.groups.items[i].id == 1){
+							$scope.groups.items[i].disabled = true;
+							$scope.groups.items[i].isDisabled = true;
+						}
+					}
+				} else {
+					$scope.groups.items = [];
+				}
+			});
+	}
+	
+	
+	//   点击上传
+	$scope.clickFile = function(){
+		console.log($('#infile_name')[0])
+		$('#infile_name')[0].click();
+	}
+	
+	
+	//   user - 导入用户
+	$scope.sendFile = function(){
+		//
+		if($scope.form.gid === null){
+			$scope.items.alert('danger','用户组必选');
+			return false;
+		}
+		
+		//
+		if(uploader.queue.length < 1){
+			$scope.items.alert('danger','请选择文件');
+		}
+		//  加入参数
+		uploader.queue[0].formData = [{
+    		"gid":$scope.form.gid,
+    		"pwdType": $scope.form.pwdType
+    	}]
+		//  上传
+		uploader.queue[0].upload();
+	}
+	
+	
+	//  初始化
+	var uploader = $scope.uploader = new FileUploader({
+        url: httpService.API.origin + '/rest/ajax.php/importUser',
+        headers:{
+        	Authorization:opCookie.getCookie('token')
+        }
+    });
+
+    // 上传筛选
+    uploader.filters.push({
+        name: 'customFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+            return this.queue.length < 10;
+        }
+    });
+
+    // 上传筛选不能过
+    uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+        console.info('onWhenAddingFileFailed', item, filter, options);
+    };
+    uploader.onAfterAddingFile = function(fileItem) {
+    	uploader.queue = [fileItem];
+    };
+    uploader.onSuccessItem = function(fileItem, response, status, headers) {
+    	if(status == 200 && response.retCode == 0){
+    		toaster.pop('success','成功', '导入成功。');
+    		//   刷新列表
+    		items.scope.table_search();
+		} else {
+			toaster.pop('warning','失败', response.msg);
+    	}
+		//   清空文件
+		uploader.queue = [];
+    };
+    uploader.onErrorItem = function(fileItem, response, status, headers) {
+        toaster.pop('warning','失败', response.msg);
+    };
+	
+	
+	
+	
+	//  close
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+	
+	$scope.ok = function(){
+		$modalInstance.close(true);
+	}
+	
+	
+	//   run
+	var run = function(){
+		//  取用户组
+		getUserGroups();
+	}
+	run();
+}]);
+
+
 
 
 

@@ -64,7 +64,7 @@ angular.module('app')
               {
                   name:'angularFileUpload',
                   files: [
-                    'vendor/modules/angular-file-upload/angular-file-upload.min.js'
+                    'vendor/modules/angular-file-upload/angular-file-upload.js'
                   ]
               },
               {

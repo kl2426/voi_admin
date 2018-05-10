@@ -1,0 +1,73 @@
+<!--  点击开户部署模式  弹窗   -->
+
+<div class="modal-header g-modal-header" modal-move>
+	<button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title"></h4>
+</div>
+<div class="modal-body g-modal-body m-modal-serverno">
+	<div class="body-body">
+		<div class="modal-body-title">{{items.operate == 'edit' ? '修改终端' : '注册终端'}}</div>
+		<div class="body-main">
+			<form class="">
+				<div class="m-modal-form row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">终端名称：</label>
+							<div class="group-body">
+								<input type="text" ng-model="form.name" ng-disabled="items.operate != 'add'" class="form-control" maxlength="16" placeholder="输入终端名称" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">计算机名：</label>
+							<div class="group-body">
+								<input type="text" ng-model="form.clientName" class="form-control" maxlength="16" placeholder="输入计算机名" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">Mac地址：</label>
+							<div class="group-body">
+								<style>
+									.m-server-ip .server-ip-input{width: 16.55%;}
+									.m-server-ip .server-ip-input:before{content: ":";}
+								</style>
+								<div class="m-server-ip form-control">
+									<div class="server-ip-nb">
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[0]" ng-keyup="bindKeyUp($event,0,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[1]" ng-keyup="bindKeyUp($event,1,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[2]" ng-keyup="bindKeyUp($event,2,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[3]" ng-keyup="bindKeyUp($event,3,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[4]" ng-keyup="bindKeyUp($event,4,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+										<div class="server-ip-input"><input type="text" ng-model="form.mac_arr[5]" ng-keyup="bindKeyUp($event,5,form,'mac_arr')" maxlength="2" onfocus="this.select();" /></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">终端组：</label>
+							<div class="group-body">
+								<ui-select ng-model="terminals.item" ng-change="terminalsChange(terminals.item)" theme="bootstrap">
+									<ui-select-match placeholder="选择终端组">{{$select.selected.name}}</ui-select-match>
+									<ui-select-choices group-by="'group'" repeat="item in terminals.items | filter: $select.search">
+										<span ng-bind-html="item.name | highlight: $select.search"></span>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal-footer g-modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>确定</button>
+  </div>

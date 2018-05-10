@@ -45,41 +45,6 @@
 							</div>
 						</div>
 					</div>
-					
-					<!--   外设策略    -->
-					<div class="col-xs-12">
-						<div class="form-group">
-							<label class="group-left control-label">外设策略：</label>
-							<div class="group-body" ng-if="items.scope.app.DevMode == 1">
-								<ui-select multiple ng-model="devRule.item" ng-change="devRuleChange(devRule.item)" theme="bootstrap">
-						            <ui-select-match placeholder="选择外设策略">{{$item.name}}</ui-select-match>
-						            <ui-select-choices group-by="someGroupFn" repeat="item in devRule.items | propsFilter: {name: $select.search}">
-						            	<div ng-bind-html="item.name | highlight: $select.search"></div>
-						            </ui-select-choices>
-						        </ui-select>
-							</div>
-							<div class="group-body" ng-if="items.scope.app.DevMode != 1">
-								<input type="text" class="form-control" disabled="disabled" maxlength="16" value="当前策略为“用户组”" />
-							</div>
-						</div>
-					</div>
-					
-					
-					<div class="col-xs-12">
-						<div class="form-group">
-							<label class="group-left control-label">数据盘还原：</label>
-							<div class="group-body">
-								<ui-select ng-model="reset.item" ng-change="resetChange(reset.item)" theme="bootstrap">
-									<ui-select-match placeholder="选择数据盘是否还原">{{$select.selected.name}}</ui-select-match>
-									<ui-select-choices group-by="'group'" repeat="item in reset.items | filter: $select.search">
-										<span ng-bind-html="item.name | highlight: $select.search"></span>
-									</ui-select-choices>
-								</ui-select>
-							</div>
-						</div>
-					</div>
-					
-					
 					<div class="col-xs-12">
 						<div class="form-group">
 							<label class="group-left control-label">描述：</label>

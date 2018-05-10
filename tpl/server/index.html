@@ -91,9 +91,25 @@
 						</li>
 					</ul>
 				</li>
-
 			</ul>
 		</div>
+		
+		
+		<div class="btn-group dropdown" dropdown>
+			<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="!app.registerd">
+              策略模式<span class="caret"></span>
+            </button>
+			<ul class="dropdown-menu" role="menu">
+				<li>
+					<a tabindex="-1" class="btn" ng-click="chgDevMode(0)" ng-disabled="app.DevMode == 0">用户组</a>
+				</li>
+				<li>
+					<a tabindex="-1" class="btn" ng-click="chgDevMode(1)" ng-disabled="app.DevMode == 1">终端组</a>
+				</li>
+			</ul>
+		</div>
+		
+		
 
 	</div>
 	<!--  title  -->

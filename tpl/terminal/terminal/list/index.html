@@ -1,14 +1,14 @@
-<div class="g-content m-server">
+<div class="g-content m-server m-terminal">
 	
 	<div class="clearfix">
 		<div class="col-xs-12">
 			<div class="col-xs-3">
 				<div class="form-group">
-					<label class="group-left control-label">用户组：</label>
+					<label class="group-left control-label">终端组：</label>
 					<div class="group-body">
-						<ui-select ng-model="table_data.user_item" ng-change="userChange(table_data.user_item)" theme="bootstrap">
-							<ui-select-match placeholder="选择用户组">{{$select.selected.name}}</ui-select-match>
-							<ui-select-choices group-by="'group'" repeat="item in table_data.user_items | filter: $select.search">
+						<ui-select ng-model="table_data.grp_item" ng-change="grpChange(table_data.grp_item)" theme="bootstrap">
+							<ui-select-match placeholder="选择终端组">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices group-by="'group'" repeat="item in table_data.grp_items | filter: $select.search">
 								<span ng-bind-html="item.name | highlight: $select.search"></span>
 							</ui-select-choices>
 						</ui-select>
@@ -18,9 +18,9 @@
 			
 			<div class="col-xs-3">
 				<div class="form-group">
-					<label class="group-left control-label">用户名：</label>
+					<label class="group-left control-label">终端名称：</label>
 					<div class="group-body">
-						<input type="text" ng-model="table_data.form.key" class="form-control" placeholder="输入用户名" />
+						<input type="text" ng-model="table_data.form.key" class="form-control" placeholder="输入终端名称" />
 					</div>
 				</div>
 			</div>
@@ -29,15 +29,25 @@
 			</div>
 		</div>
 		<div class="col-xs-12 server-menu">
-			<a class="btn btn-info" ng-click="table_operate('add',null)">新建用户</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a class="btn btn-info" ng-click="batchResetPwd()">批量重置密码</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a class="btn btn-info" ng-click="moveChgGrp()">批量移动到用户组</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a class="btn btn-info" ng-click="batchDel()">批量删除</a>
-			
-			<div class="pull-right">
-				<a class="btn btn-info" ng-click="openInFile()">导入</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<a class="btn btn-default" ng-click="outfile()">导出</a>
+			<a class="btn btn-info" ng-click="table_operate('add',null)">注册终端</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<!--<div class="btn-group dropdown" dropdown style="margin-right: 0;">
+				<button type="button" class="btn btn-info" dropdown-toggle ng-disabled="disabled">
+	              启/停用<span class="caret"></span>
+	            </button>
+				<ul class="dropdown-menu" role="menu">
+					<li>
+						<a tabindex="-1" ng-click="batchCliCtrl('approve','启用')">启用</a>
+					</li>
+					<li>
+						<a tabindex="-1" ng-click="batchCliCtrl('reject','停用')">停用</a>
+					</li>
+				</ul>
 			</div>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+			<a class="btn btn-info" ng-click="batchDel()">批量删除</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a class="btn btn-info" ng-click="batchCliCtrl('reboot','重起')">批量重启</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a class="btn btn-info" ng-click="batchCliCtrl('shutdown','关机')">批量关机</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a class="btn btn-info" ng-click="batchMove()">移动到终端组</a>
 		</div>
 	</div>
 	
@@ -59,12 +69,12 @@
 								        		<input ng-model="table_data.checkbox.allCheckbox" ng-change="table_data.checkbox.checkboxAll()" type="checkbox"><i></i>
 								        	</label>
 										</th>
-										<th>用户名</th>
-										<th>真实姓名</th>
-										<th>用户组</th>
-										<th>绑定终端组</th>
-										<th>绑定的终端</th>
-										<th>网盘大小</th>
+										<th>终端名称</th>
+										<th>计算机名</th>
+										<th>Mac地址</th>
+										<th>终端组</th>
+										<th>绑定用户</th>
+										<!--<th>是否启用</th>-->
 										<th>操作</th>
 									</tr>
 								</thead>
@@ -76,19 +86,35 @@
 								        	</label>
 										</td>
 										<td>{{item.name}}</td>
-										<td>{{item.realName}}</td>
+										<td>{{item.clientName}}</td>
+										<td>{{item.mac}}</td>
 										<td>{{item.grpName}}</td>
-										<td>{{item.mGrpName}}</td>
-										<td>{{item.machine}}</td>
 										<td>
-											<span ng-if="item.diskSize == 0">无网盘</span>
-											<span ng-if="item.diskSize > 0">{{item.diskSize}}G</span>
+											<a ng-if="item.user" ng-click="openUnbind(item)" class="btn btn-danger btn-xs">解绑</a>
+											<a ng-if="!item.user" ng-click="openUser('edit',item)" class="btn btn-info btn-xs">绑定</a>
+											{{item.user}}
 										</td>
+										<!--<td>
+											<span ng-if="item.isApproved == 1" class="label bg-primary" style="margin-right: 3px;">启用</span>
+											<span ng-if="item.isApproved == 0" class="label bg-danger" style="margin-right: 3px;">停用</span>
+										</td>-->
 										<td class="m-operate" ng-if="item.id != 1">
 											<div class="btn-group" dropdown=""><button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button><button type="button" class="btn btn-xs btn-info dropdown-toggle" dropdown-toggle="" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span>  <span class="sr-only">修改</span></button>
 												<ul class="dropdown-menu" role="menu">
+													<!--<li ng-if="item.isApproved == 0">
+														<a ng-click="table_operate('approve',item)">启用</a>
+													</li>
+													<li ng-if="item.isApproved == 1">
+														<a ng-click="table_operate('reject',item)">停用</a>
+													</li>-->
 													<li>
-														<a ng-click="table_operate('reset_pwd',item)">重置密码</a>
+														<a ng-click="table_operate('reboot',item)">重起</a>
+													</li>
+													<li>
+														<a ng-click="table_operate('shutdown',item)">关机</a>
+													</li>
+													<li>
+														<a ng-click="table_operate('move',item)">移动</a>
 													</li>
 													<li>
 														<a ng-click="table_operate('del',item)">删除</a>

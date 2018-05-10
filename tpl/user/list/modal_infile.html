@@ -1,0 +1,74 @@
+<!--  点击开户部署模式  弹窗   -->
+
+<div class="modal-header g-modal-header" modal-move>
+	<button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title"></h4>
+</div>
+<div class="modal-body g-modal-body m-modal-serverno">
+	<div class="body-body">
+		<div class="modal-body-title">导入用户</div>
+		<div class="body-main">
+			<form class="">
+				<div class="m-modal-form row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">文件名：</label>
+							<div class="group-body">
+								<input type="text" ng-model="uploader.queue[0].file.name" ng-click="clickFile()" class="form-control" style="cursor: pointer;" readonly="readonly" placeholder="点击选择文件" />
+								<div style="height: 0; width: 0;overflow: hidden;">
+									<input type="file" name="filename" id="infile_name" nv-file-select="" uploader="uploader" multiple />
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">密码加密：</label>
+							<div class="group-body">
+								<ui-select ng-model="pwdType.item" theme="bootstrap">
+									<ui-select-match placeholder="选择是否分配网盘">{{$select.selected.name}}</ui-select-match>
+									<ui-select-choices repeat="item in pwdType.items | filter: $select.search">
+										<span ng-bind-html="item.name | highlight: $select.search"></span>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">用户组：</label>
+							<div class="group-body">
+								<ui-select ng-model="groups.item" ng-change="groupsChange(groups.item)" theme="bootstrap">
+									<ui-select-match placeholder="选择用户组">{{$select.selected.name}}</ui-select-match>
+									<ui-select-choices ui-disable-choice="item.id == 1" group-by="'group'" repeat="item in groups.items | filter: $select.search">
+										<span ng-bind-html="item.name | highlight: $select.search"></span>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">&nbsp;</label>
+							<div class="group-body">
+								<button type="button" class="btn btn-info" ng-click="sendFile()" style="width: 100%;" submit-timeout>导入</button>
+							</div>
+						</div>
+					</div>
+					
+					
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal-footer g-modal-footer">
+    <button type="button" class="btn btn-info" ng-click="ok()" submit-timeout>关闭</button>
+  </div>

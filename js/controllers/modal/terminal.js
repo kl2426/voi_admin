@@ -208,6 +208,16 @@ app.controller('modalTerminalListAddCtrl', ['$scope', 'globalFn', 'httpService',
 	var run = function(){
 		//
 		angular.extend($scope.form, $scope.items.item);
+		
+		//   默认 外设配置
+		//   解析外设
+		$scope.devRule.item = [];
+		for(var i in $scope.devRule.items){
+			if(($scope.form.devRule & $scope.devRule.items[i].val) > 0){
+				$scope.devRule.item.push($scope.devRule.items[i]);
+			}
+		}
+		
 		//  
 		if($scope.items.operate == 'edit'){
 			$scope.form.mac_arr = $scope.form.mac.split(':');
@@ -405,6 +415,10 @@ app.controller('modalTerminalTypeAddCtrl', ['$scope', 'globalFn', 'httpService',
 		imgs_ids: [],
 		//   描述
 		desc : null,
+		//
+		devRule:0,
+		//
+		reset:1
 	}
 	
 	//   离线模式
@@ -420,6 +434,51 @@ app.controller('modalTerminalTypeAddCtrl', ['$scope', 'globalFn', 'httpService',
 	$scope.imgs = {}
 	$scope.imgs.items = [];
 	$scope.imgs.item = [];
+	
+	
+	
+	//   外设策略
+	$scope.devRule = {}
+	$scope.devRule.items = [
+		{"name":"声卡","val":"1"},
+		{"name":"打印机","val":"2"},
+		{"name":"存储设备","val":"4"},
+		{"name":"智能卡","val":"8"},
+		{"name":"摄像头","val":"16"},
+		{"name":"蓝牙","val":"32"},
+		{"name":"其他","val":"64"},
+		{"name":"串口","val":"128"},
+	];
+	$scope.devRule.item = [];
+	
+	
+	//   数据盘还原
+	//是否自动还原，默认为是(1)      允许值: 0, 1
+	$scope.reset = {}
+	$scope.reset.items = [
+		{"name":"是","val":"1"},
+		{"name":"否","val":"0"},
+	];
+	$scope.reset.item = $scope.reset.items[0];
+	$scope.form.reset = $scope.reset.item.val;
+	
+	
+	//   change
+	$scope.resetChange = function(item){
+		$scope.reset.item = item;
+		$scope.form.reset = item.val;
+	}
+	
+	
+	//   change
+	$scope.devRuleChange = function(items){
+		var temp_nb = 0;
+		for(var i in items){
+			temp_nb = temp_nb + +items[i].val;
+		}
+		$scope.form.devRule = temp_nb;
+	}
+	
 	
 	//   离线模式change
 	$scope.offlineChange = function(item){
@@ -500,6 +559,10 @@ app.controller('modalTerminalTypeAddCtrl', ['$scope', 'globalFn', 'httpService',
 		temp_obj.offline  = $scope.form.offline;
 		temp_obj.imgs  = $scope.form.imgs_ids;
 		temp_obj.desc  = $scope.form.desc;
+		temp_obj.devRule  = $scope.form.devRule;
+		temp_obj.reset  = $scope.form.reset;
+		
+		
 		
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/addCliGrp',temp_obj)
 		.then(function(res) {
@@ -528,6 +591,8 @@ app.controller('modalTerminalTypeAddCtrl', ['$scope', 'globalFn', 'httpService',
 		temp_obj.offline  = $scope.form.offline;
 		temp_obj.imgs  = $scope.form.imgs_ids;
 		temp_obj.desc  = $scope.form.desc;
+		temp_obj.devRule  = $scope.form.devRule;
+		temp_obj.reset  = $scope.form.reset;
 		//
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/editCliGrp',temp_obj)
 		.then(function(res) {
@@ -577,6 +642,25 @@ app.controller('modalTerminalTypeAddCtrl', ['$scope', 'globalFn', 'httpService',
 				//   取信息
 				getCliGrp($scope.items.item.id);
 			});
+			
+			$scope.form.devRule = $scope.items.item.devRule;
+			
+			//   默认 外设配置
+			//   解析外设
+			$scope.devRule.item = [];
+			for(var i in $scope.devRule.items){
+				if(($scope.form.devRule & $scope.devRule.items[i].val) > 0){
+					$scope.devRule.item.push($scope.devRule.items[i]);
+				}
+			}
+			
+			//   数据盘是否还原
+			for(var i in $scope.reset.items){
+				if($scope.reset.items[i].val == $scope.items.item.reset){
+					$scope.reset.item = $scope.reset.items[i];
+					$scope.form.reset = $scope.reset.item.val;
+				}
+			}
 		}
 	}
 	run();

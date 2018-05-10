@@ -293,7 +293,8 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 					return {
 						'operate': str,
 						'item': item,
-						'alert':$scope.addAlert
+						'alert':$scope.addAlert,
+						'scope':$scope
 					};
 				}
 			}
@@ -383,6 +384,42 @@ app.controller('userListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 			if(bol){
 				typeof cb == "function" && cb(bol);
 			}
+		}, function() {
+			//console.log('Modal dismissed at: ' + new Date());
+		});
+	}
+	
+	
+	
+	/**
+	 * 打开导入用户
+	 */
+	$scope.openInFile = function() {
+		var modalInstance = $modal.open({
+			templateUrl: 'tpl/user/list/modal_infile.html',
+			controller: 'modalUserListInfileCtrl',
+			backdrop:false,
+			windowClass:'m-none-back',
+			//size: size,
+			resolve: {
+				items: function() {
+					return {
+						'alert':$scope.addAlert,
+						'scope':$scope
+					};
+				},
+				deps: ['$ocLazyLoad',
+	                function( $ocLazyLoad){
+	                  return $ocLazyLoad.load('angularFileUpload');
+	            }]
+			}
+			
+			
+			
+		});
+
+		modalInstance.result.then(function(bol) {
+			//
 		}, function() {
 			//console.log('Modal dismissed at: ' + new Date());
 		});
@@ -585,7 +622,8 @@ app.controller('userTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpService',
 					return {
 						'operate': str,
 						'item': item,
-						'alert': $scope.addAlert
+						'alert': $scope.addAlert,
+						'scope':$scope
 					};
 				}
 			}

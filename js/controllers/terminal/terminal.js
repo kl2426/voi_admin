@@ -735,7 +735,8 @@ app.controller('terminalTypeCtrl', ['$scope', '$timeout', 'globalFn', 'httpServi
 					return {
 						'operate': str,
 						'item': item,
-						'alert': $scope.addAlert
+						'alert': $scope.addAlert,
+						'scope':$scope
 					};
 				}
 			}
