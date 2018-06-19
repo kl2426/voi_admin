@@ -181,6 +181,15 @@ app.controller('modalUserListAddCtrl', ['$scope', 'globalFn', 'httpService','ite
 			temp_obj.mGid = $scope.form.mGid;
 		}
 		//
+		if($scope.diskSize.item.val){
+			if($scope.form.diskSize > 0){
+				temp_obj.diskSize = $scope.form.diskSize;
+			}else{
+				$scope.items.alert('danger','网盘必须大于0G');
+				return false;
+			}
+		}
+		//
 		temp_obj.realName = $scope.form.realName;
 		//		
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/modifyUser',temp_obj)

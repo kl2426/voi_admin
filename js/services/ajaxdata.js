@@ -13,13 +13,13 @@
 angular.module('app').factory('httpService', function ($http, $q, $location) {
 	//
 	var http = {
-		dev2:{
+		dev:{
 			protocol: $location.protocol() + ':',
 			hostname: $location.host(),
 			port: $location.port(),
 			hash:''
 		},
-		dev:{
+		dev2:{
 			protocol:'http:',
 			hostname:'192.168.0.129',
 			port:'80',

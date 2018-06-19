@@ -10,11 +10,11 @@
 		        <i class="fa fa-fw fa-caret-down text"></i>
 		        <i class="fa fa-fw fa-caret-up text-active"></i>
 	      	</span>
-			<i class="glyphicon glyphicon-stats icon"></i>
+			<i class="{{item.fuceicon}}"></i>
 			<span>{{item.fucename}}</span>
 		</a>
 		<a ui-sref="app.{{item.fucecode_router}}" ng-if="item.childrenList.length <= 0">
-			<i class="glyphicon glyphicon-calendar icon"></i>
+			<i class="{{item.fuceicon}}"></i>
 			<span>{{item.fucename}}</span>
 		</a>
 		<ul class="nav nav-sub dk">

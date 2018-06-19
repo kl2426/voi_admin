@@ -21,6 +21,7 @@ app.controller('logListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', 
 	$scope.table_data = {
 		//   模块
 		module_items:[
+			{"name":"请选择","val":0},
 			{"name":"主模块","val":1},
 			{"name":"web","val":2},
 			{"name":"终端管理模块","val":3},
@@ -29,6 +30,7 @@ app.controller('logListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', 
 		module_item:'',
 		//   日志级别
 		level_items:[
+			{"name":"请选择","val":0},
 			{"name":"debug","val":1},
 			{"name":"info","val":2},
 			{"name":"warnning","val":3},
@@ -131,8 +133,8 @@ app.controller('logListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', 
 		httpService.ajaxPost(httpService.API.origin + '/rest/ajax.php/showLog',form)
 			.then(function(res) {
 				if(res.status == 200 && res.data.retCode == 0) {
-					angular.extend($scope.table_data.table_res, res.data);
-					$scope.table_data.table_res.row = res.data.clis;
+					$scope.table_data.table_res.row = res.data.logs;
+					$scope.table_data.table_res.total = res.data.total;
 				} else {
 					$scope.table_data.table_res.row = [];
 				}
@@ -147,7 +149,30 @@ app.controller('logListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', 
 	
 	
 	
-	
+	/**
+	 * 操作
+	 */
+	$scope.table_operate = function(str, item) {
+		if(str == 'add'){
+			openAdd(str,item);
+		}else if(str == 'edit') {
+			openAdd('edit',item);
+		} else if(str == 'del') {
+			openDel(function(){
+				delCliGrp([item.id]);
+			});
+		}else if (str == 'reboot'){
+			//   重起
+			openCliCtrl('重起',function(){
+				cgCtl(item.id,'reboot');
+			});
+		}else if (str == 'shutdown'){
+			//   关机
+			openCliCtrl('关机',function(){
+				cgCtl(item.id,'shutdown');
+			});
+		}
+	}
 	
 	
 	
@@ -163,8 +188,8 @@ app.controller('logListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', 
 	 */
 	var openAdd = function(str, item) {
 		var modalInstance = $modal.open({
-			templateUrl: 'tpl/terminal/list/modal_add.html',
-			controller: 'modalTerminalListAddCtrl',
+			templateUrl: 'tpl/log/list/modal_add.html',
+			controller: 'modalLogSeeCtrl',
 			//size: size,
 			resolve: {
 				items: function() {
@@ -213,7 +238,7 @@ app.controller('logListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', 
 		  type: 'datetime',
 		  theme: '#b18bbb',
 		  done:function(value, date, endDate){
-		  	$scope.form.start = value;
+		  	$scope.table_data.form.start = value;
 		  }
 		});
 		//时间选择器
@@ -222,7 +247,7 @@ app.controller('logListCtrl', ['$scope', '$timeout', 'globalFn', 'httpService', 
 		  type: 'datetime',
 		  theme: '#b18bbb',
 		  done:function(value, date, endDate){
-		  	$scope.form.end = value;
+		  	$scope.table_data.form.end = value;
 		  }
 		});
 	}

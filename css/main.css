@@ -105,6 +105,9 @@ table.dataTable thead .sorting_asc.td-checkbox:after{content: "";}
 
 
 
+.m-server-table .table-one{display: block; overflow: hidden; white-space: nowrap; max-width: 450px; text-overflow: ellipsis; }
+
+
 /*  alert  */
 .m-alert{position: fixed; top: 20px;width: 100%; z-index: 1051;}
 .m-alert .alert-body{width: 300px; margin: 0 auto;}

@@ -141,6 +141,19 @@
 				"isdel": 0,
 				"ownerType": 0,
 				"isChecked": false
+			}, {
+				"fuceid": "11",
+				"fucecode": "MIRROR-DEPLOY",
+				"fucename": "部署镜像",
+				"fucelevel": "2",
+				"fucedesc": "部署镜像",
+				"fuceresource": "/log/goToPage?goToPage\u003dlogList",
+				"fuceindex": "2",
+				"fuceparentcode": "MIRROR",
+				"fuceismenu": "1",
+				"isdel": 0,
+				"ownerType": 0,
+				"isChecked": false
 			}
 		]
 	}, {

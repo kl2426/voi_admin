@@ -1,0 +1,60 @@
+<!--  点击开户部署模式  弹窗   -->
+
+<div class="modal-header g-modal-header" modal-move>
+	<button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title"></h4>
+</div>
+<div class="modal-body g-modal-body m-modal-serverno">
+	<div class="body-body">
+		<div class="modal-body-title">查看</div>
+		<div class="body-main">
+			<form class="">
+				<div class="m-modal-form row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">日志时间：</label>
+							<div class="group-body">
+								<input type="text" ng-model="items.item.time" ng-disabled="true" class="form-control" placeholder="日志时间" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">模块：</label>
+							<div class="group-body">
+								<input type="text" ng-if="items.item.module == 1" value="主模块" ng-disabled="true" class="form-control" placeholder="模块" />
+								<input type="text" ng-if="items.item.module == 2" value="web" ng-disabled="true" class="form-control" placeholder="模块" />
+								<input type="text" ng-if="items.item.module == 3" value="终端管理模块" ng-disabled="true" class="form-control" placeholder="模块" />
+								<input type="text" ng-if="items.item.module == 4" value="部署模块" ng-disabled="true" class="form-control" placeholder="模块" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">日志级别：</label>
+							<div class="group-body">
+								<input type="text" ng-if="items.item.level == 1" value="debug" ng-disabled="true" class="form-control" placeholder="日志级别" />
+								<input type="text" ng-if="items.item.level == 2" value="info" ng-disabled="true" class="form-control" placeholder="日志级别" />
+								<input type="text" ng-if="items.item.level == 3" value="warnning" ng-disabled="true" class="form-control" placeholder="日志级别" />
+								<input type="text" ng-if="items.item.level == 4" value="error" ng-disabled="true" class="form-control" placeholder="日志级别" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="group-left control-label">日志内容：</label>
+							<div class="group-body">
+								<textarea class="form-control" ng-model="items.item.cont" rows="6" placeholder="日志内容"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal-footer g-modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+  </div>

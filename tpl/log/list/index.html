@@ -58,7 +58,7 @@
 				</div>
 				
 				<div class="col-xs-6 server-menu" style="text-align: right;">
-					<a class="btn btn-info">日志下载</a>
+					<!--<a class="btn btn-info">日志下载</a>-->
 				</div>
 			</div>
 			
@@ -85,12 +85,10 @@
 								        		<input ng-model="table_data.checkbox.allCheckbox" ng-change="table_data.checkbox.checkboxAll()" type="checkbox"><i></i>
 								        	</label>
 										</th>
-										<th>终端名称</th>
-										<th>计算机名</th>
-										<th>Mac地址</th>
-										<th>终端组</th>
-										<th>绑定用户</th>
-										<!--<th>是否启用</th>-->
+										<th>日志时间</th>
+										<th>模块</th>
+										<th>日志级别id</th>
+										<th>日志内容</th>
 										<th>操作</th>
 									</tr>
 								</thead>
@@ -101,45 +99,24 @@
 								        		<input ng-model="item.checked" ng-change="table_data.checkbox.checkboxClick()" type="checkbox"><i></i>
 								        	</label>
 										</td>
-										<td>{{item.name}}</td>
-										<td>{{item.clientName}}</td>
-										<td>{{item.mac}}</td>
-										<td>{{item.grpName}}</td>
+										<td>{{item.time}}</td>
 										<td>
-											<a ng-if="item.user" ng-click="openUnbind(item)" class="btn btn-danger btn-xs">解绑</a>
-											<a ng-if="!item.user" ng-click="openUser('edit',item)" class="btn btn-info btn-xs">绑定</a>
-											{{item.user}}
+											<span ng-if="item.module == 1">主模块</span>
+											<span ng-if="item.module == 2">web</span>
+											<span ng-if="item.module == 3">终端管理模块</span>
+											<span ng-if="item.module == 4">部署模块</span>
 										</td>
-										<!--<td>
-											<span ng-if="item.isApproved == 1" class="label bg-primary" style="margin-right: 3px;">启用</span>
-											<span ng-if="item.isApproved == 0" class="label bg-danger" style="margin-right: 3px;">停用</span>
-										</td>-->
-										<td class="m-operate" ng-if="item.id != 1">
-											<div class="btn-group" dropdown=""><button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button><button type="button" class="btn btn-xs btn-info dropdown-toggle" dropdown-toggle="" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span>  <span class="sr-only">修改</span></button>
-												<ul class="dropdown-menu" role="menu">
-													<!--<li ng-if="item.isApproved == 0">
-														<a ng-click="table_operate('approve',item)">启用</a>
-													</li>
-													<li ng-if="item.isApproved == 1">
-														<a ng-click="table_operate('reject',item)">停用</a>
-													</li>-->
-													<li>
-														<a ng-click="table_operate('reboot',item)">重起</a>
-													</li>
-													<li>
-														<a ng-click="table_operate('shutdown',item)">关机</a>
-													</li>
-													<li>
-														<a ng-click="table_operate('move',item)">移动</a>
-													</li>
-													<li>
-														<a ng-click="table_operate('del',item)">删除</a>
-													</li>
-												</ul>
-											</div>
+										<td>
+											<span ng-if="item.level == 1">debug</span>
+											<span ng-if="item.level == 2">info</span>
+											<span ng-if="item.level == 3">warnning</span>
+											<span ng-if="item.level == 4">error</span>
 										</td>
-										<td class="m-operate" ng-if="item.id == 1">
-											<button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">修改</button>
+										
+										
+										<td><div class="table-one" title="{{item.cont}}">{{item.cont}}</div></td>
+										<td class="m-operate">
+											<div class="btn-group" dropdown=""><button type="button" class="btn btn-xs btn-info" ng-click="table_operate('edit',item)">查看</button></div>
 										</td>
 									</tr>
 									<tr role="row" ng-if="table_data.table_res.row.length < 1">

@@ -2,7 +2,7 @@
 
 
 /**
- * 添加终端注册
+ * 日志查看详情
  */
 app.controller('modalLogSeeCtrl', ['$scope', 'globalFn', 'httpService','items','$modalInstance','toaster','$timeout', function($scope,  globalFn, httpService,items,$modalInstance,toaster,$timeout) {
 	//   items
